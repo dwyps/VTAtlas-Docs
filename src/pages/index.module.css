@@ -1,0 +1,45 @@
+/* Deliberately small. Infima variables do the theming; this file only lays out the hero. */
+
+.hero {
+  padding: 6rem 0 5rem;
+  text-align: center;
+  background: linear-gradient(180deg, var(--ifm-color-primary-darkest) 0%, transparent 100%);
+}
+
+.heroTitle {
+  font-size: 3.5rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.heroTagline {
+  font-size: 1.35rem;
+  opacity: 0.85;
+  margin-bottom: 1.5rem;
+}
+
+.heroBody {
+  max-width: 46rem;
+  margin: 0 auto 2rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+.heroButtons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.heroMeta {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  opacity: 0.6;
+}
+
+@media screen and (max-width: 640px) {
+  .hero { padding: 3.5rem 1rem 3rem; }
+  .heroTitle { font-size: 2.5rem; }
+}
