@@ -1,0 +1,31 @@
+# Dependencies
+/node_modules
+
+# Production
+/build
+
+# Generated files
+.docusaurus
+.cache-loader
+
+# Misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Raw capture material. Multi-MB PNGs straight off the Snipping Tool and 50-200 MB OBS recordings.
+# Only the encoded products (AVIF stills, H.264 clips) are committed. Cloudflare Pages rejects any
+# single asset over 25 MiB at upload time, so raw footage could not be served from here anyway.
+raw/
+
+# Obsidian per-machine state. workspace.json holds pane layout and lastOpenFiles; plugins/ would ship
+# third-party JavaScript inside a product a buyer paid for, and trip Obsidian's Restricted Mode prompt.
+# app.json IS committed: its five keys are what stop Obsidian writing [[wikilinks]] into the vault.
+docs/.obsidian/*
+!docs/.obsidian/app.json
