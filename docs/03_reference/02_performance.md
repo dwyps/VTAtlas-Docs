@@ -53,8 +53,8 @@ holds about 468 KB.
 A volume you **place in a level** also costs an actor, a shape component and a collision body, and
 those dominate the descriptor by more than an order of magnitude. If you are budgeting memory for
 thousands of regions, budget the actors, not this number. Regions registered directly through the API
-with no actor cost only what is below. There is no acceleration structure, no cached query results,
-and nothing per-frame.
+with no actor cost only what is below. Nothing is cached, nothing is indexed, and nothing runs
+per frame.
 
 Spline regions additionally hold their baked hulls, which is whatever your outline needs: the sample
 map's U-shaped approach region is three hulls of eight vertices.
@@ -98,60 +98,22 @@ For those, clear **Is Spatially Loaded** on the volume so it stays resident, or 
 somewhere that outlives the volume. In a partitioned world the number worth watching is the actor and
 package count, not query time.
 
-## Why there is no octree
+## Why there is no spatial index
 
-Because it is slower than not having one, at the sizes that matter, and the alternatives that are
-faster cost more than they save.
+Because at the sizes this plugin is built for, one would cost more than it saves.
 
-Seven approaches were implemented and measured against each other, each verified to return exactly the
-same answers as the shipped scan before being timed. Nanoseconds per query, clustered corpus, which is
-the one that looks most like a real level:
+A location query walks the list of volumes and tests each one. That sounds naive, and at a hundred
+regions it answers in a fifth of a microsecond, which is far below anything you can measure in a frame.
+Adding an index would buy back time nobody was spending, in exchange for memory, a second structure to
+keep correct, and a rebuild cost every time a region streams in or out.
 
-| Approach | 100 | 1,000 | 5,000 | Index memory at 5,000 |
-|---|---:|---:|---:|---:|
-| **Linear scan (ships)** | **207** | **2,967** | **20,441** | **0** |
-| Linear scan, packed arrays | 82 | 934 | 7,438 | 0 |
-| Sweep and prune on one axis | 11 | 286 | 1,572 | 351 KB |
-| Engine physics scene query | 1,771 | 1,870 | 2,027 | 0 |
-| Engine octree (`TOctree2`) | 26 | 91 | 185 | 3,210 KB |
-| Bounding volume hierarchy | 4 | 17 | 34 | 574 KB |
-| Uniform grid | 19 | 21 | 26 | 2,385 KB |
+We did build and measure the alternatives before deciding, across query time, memory, and the cost of
+adding and removing a region as level streaming does. The plain scan is the only one that is cheap on
+every axis. The faster structures win on query time by a wide margin and lose badly on streaming, which
+is the thing a real level actually does.
 
-Three things this shows.
-
-**At 100 regions the difference is nanoseconds.** Every structure answers in under a quarter of a
-microsecond. Shipping an index would buy 200 ns per query in exchange for memory, build time, and a
-second structure that has to stay correct. That is a bad trade for a cost nobody can measure.
-
-**The engine's own physics scene is not the free answer.** It looked like the obvious one: every volume
-already has a collision body, so the scene already indexes them. Measured, it is the slowest option at
-100 regions, by a factor of over 400 against a purpose-built structure, because a general scene query
-takes a lock and builds hit structures before answering a much broader question than "is this point
-inside one of these boxes".
-
-**Query time alone picks the wrong winner, which is why the table above is not the whole comparison.**
-Measured across the axes that a real game pays for, at 5,000 regions:
-
-| Approach | Query | Bytes/region | Add one region | Remove one |
-|---|---:|---:|---:|---:|
-| **Linear scan (ships)** | 21,281 ns | 96 B | **1.1 us** | **2.4 us** |
-| Sweep and prune | 1,804 ns | 72 B | 3.0 us | 5.1 us |
-| Uniform grid | 29 ns | 488 B | 1.2 us | 3.3 us |
-| Engine octree | 193 ns | 658 B | 2.7 us | 536 us |
-| Bounding volume hierarchy | **34 ns** | 118 B | **2,292 us** | **2,286 us** |
-
-Add and remove are what **level streaming** does. The BVH has the fastest query of anything here and
-costs 2.3 milliseconds to accept one region, because a median-split tree has no incremental insert and
-has to be rebuilt: 137 frames at 60 Hz, for one region streaming in. The octree inserts cheaply but
-removes slowly, for a structural reason to do with how element identity is tracked.
-
-**The linear scan is the only approach that is cheap on every axis.** It loses query time by three
-orders of magnitude and wins everything else, and at the scale this plugin is for, query time is the
-axis that does not matter.
-
-If VT Atlas ever does need an index, the grid and the BVH are the candidates, and which one wins
-depends on whether your level streams. The work is done and measured; it is not shipped because nothing
-needs it yet.
+If your project has thousands of regions and you are seeing this in a profile, get in touch. The
+measurements exist and an index can be added; nothing needs it yet.
 
 ## What is not measured here
 

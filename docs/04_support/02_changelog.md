@@ -23,14 +23,14 @@ versioning. Every breaking change carries a migration note saying what to do abo
 - **Editor tooling.** Region volume wireframes are tinted by how deep the region sits, measured
   relative to Region Root Tag when one is set, and the region tag is drawn in the viewport when a
   volume is selected. The details panel gains Fit To Selection and Add Child Region.
-- **A region volume too large for the physics broad phase is now divided into several collision bodies
-  automatically.** Past about 1 km on its longest axis, Chaos drops a body out of its acceleration
-  structure and into a list that every scene query in the game searches one by one. Measured, that is
-  about 21 nanoseconds per oversized body on every query, paid by character movement and traces
-  belonging to systems with no connection to regions. A box divides into a grid, a capsule along its
-  axis, and a spline footprint by redistributing whole hulls. All three are exact: the pieces cover
-  precisely what the whole did. One region, one tag, one descriptor, unchanged behaviour; only the
-  collision is split, and below the threshold nothing happens at all.
+- **A very large region volume is now split into several collision bodies automatically.** Past about
+  a kilometre on its longest axis, the physics system stops indexing a body properly, and from then on
+  every scene query in your game pays a little for it, including character movement and line traces
+  belonging to systems that have nothing to do with regions. VT Atlas divides oversized volumes so that
+  does not happen. A box becomes a grid, a capsule divides along its axis, and a spline footprint
+  regroups its pieces. All three are exact: the pieces cover precisely what the whole one did. It is
+  still one region with one tag and unchanged behaviour, only the collision is split, and below the
+  threshold nothing happens at all.
 - **A volume that cannot be divided is warned about instead.** A sphere cannot be tiled by spheres, and
   a footprint whose single hull is itself too large cannot be helped by regrouping. The editor
   validation names the span and the cost. It is a warning and not an error, because a very large region

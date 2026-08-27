@@ -30,6 +30,14 @@ Place a volume tagged `Castle.Keep.Hall.Vault` and an actor standing in it is in
 hall, in the keep and in the castle. You did not have to place four volumes, and nothing had to be
 told that a vault sits inside a hall. The tag said so.
 
+![Four nested boxes labelled Castle, Castle.Keep, Castle.Keep.Hall and Castle.Keep.Hall.Vault, each inside the one before it, with a single actor marker in the innermost.](./media/tag_hierarchy.svg)
+
+Seen from above, that is one boundary inside another:
+
+![Plan view of the sample keep showing nested region boundaries: a large outer approach region, the
+keep inside it, the hall within the keep, and a small vault region at the
+centre.](./media/regions_plan.avif)
+
 That is the whole reason regions are tags. A depth limit, a fixed vocabulary or a "zone parent" field
 would all be a second place to say the same thing, and a second place to get it wrong.
 

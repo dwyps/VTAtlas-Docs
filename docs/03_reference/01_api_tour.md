@@ -118,3 +118,91 @@ The registration seam takes plain data: build an `FVTATLVolumeDesc` and call `Re
 public so a procedural level can make regions without placing actors. A descriptor with no shape
 becomes a box matching its bounds; a descriptor with a shape that cannot answer containment is
 refused rather than substituted.
+
+## From C++
+
+Everything above is equally callable from C++. Add the module dependency and include the subsystem:
+
+```cpp
+// YourModule.Build.cs
+PublicDependencyModuleNames.AddRange(new[] { "VTAtlas", "GameplayTags" });
+```
+
+```cpp
+#include "VTATLRegionSubsystem.h"
+```
+
+### The three questions
+
+`UVTATLRegionSubsystem` is a world subsystem: one per world, nothing to place, nothing to initialise.
+
+```cpp
+UVTATLRegionSubsystem* Atlas = GetWorld()->GetSubsystem<UVTATLRegionSubsystem>();
+if (Atlas == nullptr)
+{
+    return;
+}
+
+// Is this actor in that region? "OrNested" counts the hierarchy, "Exact" does not.
+const bool bInCastle = Atlas->IsActorInRegionOrNested(Pawn, TAG_Castle);
+
+// Which single region is it in? False when the actor is in none, rather than an empty tag you
+// then have to test separately.
+FGameplayTag Resolved;
+if (Atlas->GetResolvedRegion(Pawn, Resolved))
+{
+    FText DisplayName;
+    Atlas->GetRegionDisplayName(Resolved, DisplayName);
+}
+
+// Who is in that region?
+const TArray<AActor*> Occupants = Atlas->GetActorsInRegionExact(TAG_Vault);
+```
+
+### Hearing about crossings
+
+```cpp
+void AMyGameMode::BeginPlay()
+{
+    Super::BeginPlay();
+
+    if (UVTATLRegionSubsystem* Atlas = GetWorld()->GetSubsystem<UVTATLRegionSubsystem>())
+    {
+        Atlas->OnActorEnteredRegionOrNested.AddDynamic(this, &AMyGameMode::HandleEntered);
+        Atlas->OnRegionOccupied.AddDynamic(this, &AMyGameMode::HandleRegionOccupied);
+    }
+}
+
+void AMyGameMode::HandleEntered(AActor* Actor, FGameplayTag RegionTag)
+{
+    // THIS RUNS ON THE SERVER AND ON EVERY CLIENT. Regions are computed from level content that
+    // everyone loads, so anything awarded here is awarded once per connection unless you gate it.
+    if (!HasAuthority())
+    {
+        return;
+    }
+
+    GrantAreaBonus(Actor, RegionTag);
+}
+
+void AMyGameMode::HandleRegionOccupied(FGameplayTag RegionTag)
+{
+    // The first occupant arrived. This carries no actor, which is the point: enters and exits are
+    // not conserved once an actor is destroyed, so a count kept by hand drifts and this one cannot.
+    ArmEncounter(RegionTag);
+}
+```
+
+### Dwell time
+
+```cpp
+double Seconds = 0.0;
+if (Atlas->GetTimeInRegion(Pawn, TAG_Arena, Seconds) && Seconds >= 120.0)
+{
+    CompleteObjective();
+}
+```
+
+It returns false rather than zero when the actor is not in the region, because an actor that arrived
+this instant has genuinely been there for zero seconds and the two need telling apart.
+
