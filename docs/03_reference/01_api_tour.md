@@ -40,6 +40,7 @@ before you draw the number.
 | `Get Region Display Name` | The name from the region definition asset, if one supplies it |
 | `Get Child Regions With Volumes` | Regions under this one that actually exist in the level |
 | `Get Child Regions In Tag Table` | Regions under this one in the project's tag table |
+| `Get Region User Data` | The struct you attached to this region's volume |
 
 The last two are genuinely different questions. The tag table lists what a designer has named; the
 volume list is what the level actually contains. A minimap wants the second one.
@@ -82,6 +83,20 @@ Watching a region also watches everything nested under it: watch `Castle.Keep` a
 
 The last pair is about level content, not actors. It fires for the first volume carrying a tag and the
 last one leaving, and never for the ones in between, which is what a minimap actually wants.
+
+## Reading your own data off a region
+
+`Get Region User Data` returns the struct you attached to the volume, plus a boolean saying whether
+there was one at all. `Get Volume User Data` asks the same of one specific volume by handle, when you
+already have the handle and do not want the shared-tag rule applied.
+
+In Blueprint the flow is: **Get Region User Data** to fetch the instanced struct, then the engine's
+**Get Instanced Struct Value** to unpack it into your own type. That second node also reports whether
+the struct was the type you asked for, so a volume carrying somebody else's settings does not silently
+read as yours.
+
+Branch on the boolean, always. Empty means nobody attached data to that region, which is a normal
+state and not an error.
 
 ## Placing regions
 
@@ -206,3 +221,43 @@ if (Atlas->GetTimeInRegion(Pawn, TAG_Arena, Seconds) && Seconds >= 120.0)
 It returns false rather than zero when the actor is not in the region, because an actor that arrived
 this instant has genuinely been there for zero seconds and the two need telling apart.
 
+### Your own data on a region
+
+Declare the struct your game needs. It lives in **your** module; VT Atlas never sees the type.
+
+```cpp
+USTRUCT(BlueprintType)
+struct FMyRegionAmbience
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<USoundBase> Bed = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0.0", ClampMax = "1.0"))
+	float Wetness = 0.0f;
+};
+```
+
+Pick it in the volume's **User Data** slot, then read it back with the templated accessor. It returns
+a pointer so the wrong type is null rather than a reinterpreted cast:
+
+```cpp
+if (const FMyRegionAmbience* Ambience = Atlas->GetRegionUserDataPtr<FMyRegionAmbience>(RegionTag))
+{
+	ApplyAmbience(Ambience->Bed, Ambience->Wetness);
+}
+```
+
+`GetRegionUserData` and `GetVolumeUserData` are the untyped forms, handing back an `FInstancedStruct`
+and a bool. Use those when the type is not known at the call site.
+
+Setting it from code is a field on the descriptor, so a procedurally built region carries data the
+same way a placed one does:
+
+```cpp
+FVTATLVolumeDesc Desc;
+Desc.RegionTag = RegionTag;
+Desc.WorldBounds = Bounds;
+Desc.UserData = FInstancedStruct::Make(FMyRegionAmbience{ CryptBed, 0.35f });
+```
