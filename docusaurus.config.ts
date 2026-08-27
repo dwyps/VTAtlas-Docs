@@ -89,14 +89,15 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: 'img/docusaurus-social-card.jpg',
+    // TODO: og card at 1200x630 once artwork exists. Omitted rather than shipping
+    // Docusaurus's own social card.
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
     },
     navbar: {
       title: 'VT Atlas',
-      logo: {alt: 'VT Atlas', src: 'img/logo.svg'},
+      // TODO: logo once artwork exists. Title-only for now rather than Docusaurus's logo.
       items: [
         {type: 'docSidebar', sidebarId: 'docsSidebar', position: 'left', label: 'Documentation'},
         {type: 'docsVersionDropdown', position: 'right'},
