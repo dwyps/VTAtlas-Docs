@@ -26,7 +26,7 @@ nesting is visible at a glance in the viewport.*
 Regions are the plumbing under a lot of things that look unrelated.
 
 **A location banner.** "The Drowned Keep" fades in when the player arrives. Add a **Region Listener**
-component, set a display name on the volume, bind **On Single Region Changed**. Two nodes and a widget.
+component, set a display name on the volume, bind **On Current Region Changed**. Two nodes and a widget.
 
 **A map that fills in as you explore.** Discovery is per player, server-authoritative and replicated to
 its owner only, so one player's map is genuinely not the other's. The sample keep ships a working
@@ -45,7 +45,7 @@ arrive and resets when they leave. It carries no actor, so it cannot drift the w
 does.
 
 **Objectives phrased as places.** "Reach the docks" is a region enter event. "Survive two minutes in the
-arena" is **Get Time In Region**. "Visit every district" is the discovery list.
+arena" is **Get Time in Region**. "Visit every district" is the discovery list.
 
 **Behaviour attached to the place instead of the actor.** A **Region Feature** on a region definition
 runs when that region is occupied and stops when it empties, with nothing placed in the level and
