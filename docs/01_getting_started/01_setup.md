@@ -36,7 +36,14 @@ from the wrong branch at three in the morning.
 Open the Place Actors panel (Window > Place Actors), type `region` in its search box, and drag a
 **VT Atlas Region Volume (Box)** into the level. Size it like any trigger.
 
+![The Place Actors panel filtered by the word region, showing four entries: VT Atlas Region Volume in Box, Sphere, Capsule and Spline forms.](./media/place_region_volume.avif)
+
 Set its **Region Tag** to one of your tags. That is the minimum: a volume with a tag is a region.
+
+![The Details panel for a selected region volume, showing the VT Atlas category with an Authoring group holding Fit To Selection and Add Child Region, and a Regions group holding Region Tag, Priority, User Data, Tracked Object Types, Track Static Geometry, Occupant Filter and Definition.](./media/volume_details_panel.avif)
+
+Everything below the tag has a working default. **User Data** is where your own struct goes, and
+**Tracked Object Types** decides which object types the volume notices at all.
 
 Press Play and walk into it. Nothing visible happens yet, which is correct - a region is information,
 not an effect.
