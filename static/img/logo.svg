@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="VT Atlas">
-  <rect width="128" height="128" rx="28" fill="#1A212B"/>
-  <rect x="16" y="16" width="96" height="96" rx="8" fill="none" stroke="#7A382B" stroke-width="4.1"/>
-  <rect x="16" y="16" width="61.4" height="61.4" rx="8" fill="none" stroke="#BA482B" stroke-width="5.1"/>
-  <rect x="16" y="16" width="37.1" height="37.1" rx="8" fill="#FF5A2C"/>
-  <circle cx="34.6" cy="34.6" r="5.9" fill="#1A212B"/>
+  <rect width="128" height="128" rx="28" fill="#121417"/>
+  <rect x="16" y="16" width="96" height="96" rx="8" fill="none" stroke="#506D0E" stroke-width="4.1"/>
+  <rect x="16" y="16" width="61.4" height="61.4" rx="8" fill="none" stroke="#7EAF07" stroke-width="5.1"/>
+  <rect x="16" y="16" width="37.1" height="37.1" rx="8" fill="#B6FF00"/>
+  <circle cx="34.6" cy="34.6" r="5.9" fill="#121417"/>
 </svg>
