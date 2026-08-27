@@ -230,6 +230,35 @@ than the shape itself, which is exactly why the region tests the shape.
 **One limitation, stated plainly:** a closed spline encloses one outline and cannot express a hole. A
 region with a hole in the middle is two regions, or a shape that wraps around.
 
+## Carrying your own data on a region
+
+VT Atlas owns a deliberately small set of per-volume settings: a tag, a shape, a priority, a tracked
+object list. Every project then wants one more, and every project wants a different one. An ambience
+bank. A PvP flag. A difficulty band. A light preset. A localisation key for the region name.
+
+Rather than guess at those, each volume has a **User Data** slot that holds a struct **you** define.
+Make a `USTRUCT` with whatever fields your game needs, pick it on the volume, and read it back from
+any query that names a region. The plugin stores it and hands it back. It never reads a field of it
+and never needs to know the type, which is what lets it be anything.
+
+It is an instanced struct, so it has first-class Make and Break nodes in Blueprint and needs no C++.
+It also serialises inline into the level, so there is no extra asset to keep in sync and nothing to
+load at runtime.
+
+Three rules worth knowing before you rely on it:
+
+- **Empty is a real answer.** A volume with nothing attached reports that it has none, rather than
+  handing back a zeroed struct. A caller that cannot tell those apart would apply the defaults of a
+  struct nobody ever attached.
+- **Asking for the wrong type gives you nothing, not garbage.** If a volume carries an ambience struct
+  and you ask it for a difficulty struct, the answer is empty. There is no reinterpreted cast over a
+  struct of a different shape.
+- **The lookup is exact, and when two volumes share a tag the first one registered wins.** That is the
+  same rule as the region display name, deliberately: a HUD that shows a region's name and reads its
+  settings has to get both from the same volume. Exactness matters too. Settings authored on
+  `Castle.Keep.Vault` describe the vault, so asking about `Castle.Keep` does not inherit them, or the
+  vault's ambience would play across the whole castle.
+
 ## What VT Atlas does not do
 
 - **No subtractive volumes.** A region is not a boolean solid. Use a separate tag and a Priority.

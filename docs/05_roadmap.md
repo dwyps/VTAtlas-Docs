@@ -1,6 +1,6 @@
 ---
 slug: /roadmap
-description: "What is coming to VT Atlas, what is being considered, and what it will deliberately never do."
+description: "What is coming to VT Atlas and roughly when, what is being considered, and what it will deliberately never do."
 ---
 
 # Roadmap
@@ -8,15 +8,39 @@ description: "What is coming to VT Atlas, what is being considered, and what it 
 What is planned, what is being weighed, and what VT Atlas will not do. The last list is the useful one:
 knowing where a plugin stops is worth more than a wish list.
 
-Nothing here is a date. Items move when they are ready, and the order below is roughly the order they
-are likely to arrive in.
+![A left-to-right timeline with four stops: version 1.0 shipping in Q3 2026, version 1.1 targeted at Q4 2026, version 1.2 targeted at Q1 2027, and an unscheduled considering stop from 2027 onward. Each stop lists its features, and later stops are drawn dimmer.](./media/roadmap_timeline.svg)
+
+**The dates are targets, not commitments.** They exist because "sometime" is not useful when you are
+deciding whether to build on this, and a quarter is honest about the precision actually available. An
+item slips rather than ships half finished, and when one slips this page says so.
+
+## Shipping now — v1.0, Q3 2026
+
+Everything the plugin does today. It is on the timeline for the same reason the later stops are: so you
+can see at a glance what you get now against what you would be waiting for.
+
+Regions from your gameplay tags, four volume shapes including splines, per-player replicated discovery,
+region features, per-volume user data, and exits that pair with enters however an actor left. See
+[Concepts](./02_concepts.md) for what each of those means.
 
 ## Planned
+
+### v1.1 — Q4 2026
 
 **Save and restore discovery.** Discovery is per player and lives in memory today, so a map that filled
 in during a session starts empty in the next one. The plan is a pair of functions that hand you the
 discovered set as plain data and take it back, so it goes in whatever save system you already have
 rather than one this plugin invents.
+
+**An editor region browser.** A panel listing every region in the level with its tag, volume count,
+depth and current occupants, so you can find the one you mean without hunting the outliner. Today the
+gameplay debugger shows this at runtime and the editor shows nothing.
+
+### v1.2 — Q1 2027
+
+**Region volume presets.** Placing a volume still means setting a tag, a shape and a tracked-object
+list every time. A preset asset would carry a configured starting point, which matters most for teams
+where one person defines the conventions and everyone else follows them.
 
 **A spatial index for very large levels.** The work is already done and measured: at a hundred regions
 a plain scan answers in a fifth of a microsecond and an index would be slower overall once streaming
@@ -24,17 +48,13 @@ cost is counted. Past a few thousand regions that reverses. A uniform grid is th
 it ships behind a setting when somebody has a level that needs it. See
 [Performance](./03_reference/02_performance.md) for the numbers behind that decision.
 
-**An editor region browser.** A panel listing every region in the level with its tag, volume count,
-depth and current occupants, so you can find the one you mean without hunting the outliner. Today the
-gameplay debugger shows this at runtime and the editor shows nothing.
+This one sits late on purpose. Nothing in it helps a level that does not need it, and the measurement
+says most levels do not.
 
-**Region volume presets.** Placing a volume still means setting a tag, a shape and a tracked-object
-list every time. A preset asset would carry a configured starting point, which matters most for teams
-where one person defines the conventions and everyone else follows them.
+## Considering — 2027 onward, no version
 
-## Considering
-
-These are real ideas with real arguments against them. They ship only if the argument for wins.
+Real ideas with real arguments against them. They carry no date because they ship only if the argument
+for wins, and some of them will not.
 
 **A Gameplay Ability System bridge.** Granting an ability or applying an effect while an actor is in a
 region is an obvious fit, and it was deliberately left out of v1: VT Atlas has no GAS dependency today
@@ -54,7 +74,7 @@ This one is genuinely hard to do without making promises about netcode that the 
 
 ## Not planned
 
-Deliberate limits, not gaps.
+Deliberate limits, not gaps. No dates, because these are not coming.
 
 **A region vocabulary.** VT Atlas will never ship a set of region names or a depth convention. Regions
 are your gameplay tags and the hierarchy is yours; a built-in vocabulary would be a second place to say
@@ -74,4 +94,4 @@ them.
 
 If you need one of these sooner, or something that is not here, say so through the
 [contact form](https://vestro.hr/#contact). Knowing that a real project is blocked on an item moves it
-up this list faster than anything else.
+up this list faster than anything else, and it is the only thing that reliably does.
