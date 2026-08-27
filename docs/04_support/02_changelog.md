@@ -12,6 +12,23 @@ versioning. Every breaking change carries a migration note saying what to do abo
 
 ### Added
 
+- **Every exit now pairs with an enter.** An actor that leaves a region is announced whatever the
+  reason: walking out, being destroyed, a level change, a streamed-out level, or play ending. All of
+  them fire the existing exit events and all of them hand you a live actor, because the teardown cases
+  are caught on `End Play` while the actor still exists.
+
+  Before this the plugin only reported actors that MOVED out. An occupant destroyed inside a region was
+  cleaned up correctly and silently never announced, so anything held on the enter edge - a buff, an
+  entry in a map, a spawned widget - leaked the moment a player died or disconnected, and the only
+  symptom was state that slowly stopped matching the world.
+
+  **`On Actor Departed Region`** fires alongside every closure-edge exit and carries the reason:
+  Crossed, Destroyed, Level Transition, Removed or Shutdown. Bind it rather than the plain exit if you
+  hold per-actor state and need to tell a walk-out from a disconnect.
+
+  Migration: none. Existing exit bindings simply start firing in cases where they previously did not,
+  which is what they were always assumed to do.
+
 - **The sample map now demonstrates the region feature seam and per-player discovery.** A fourth
   nesting level, a reliquary alcove, is authored through a region definition asset rather than a tag on
   its volume, and that definition carries a feature which lights the alcove on the occupancy edge and
@@ -103,8 +120,8 @@ versioning. Every breaking change carries a migration note saying what to do abo
 
   Two things worth reading before you use it. These run on the server AND on every client, because
   regions are computed identically from level content everyone loads, so anything awarded here is
-  awarded once per connection unless you gate on Has Authority. And an exit is not promised to pair
-  with an enter: an actor destroyed inside a region is never told it left. It is a crossing
+  awarded once per connection unless you gate on Has Authority. (Exits used to be unreliable at
+  teardown; as of the entry above they are not. It remains a crossing
   notification, not a lifecycle hook.
 
 - **Discovery survives a dormant PlayerState.** If your project sets PlayerStates dormant to save

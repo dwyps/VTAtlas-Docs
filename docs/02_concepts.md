@@ -110,6 +110,28 @@ The one exception is **discovery**, the record of which regions a player has fou
 server-authoritative and replicates to its owning client only, because it is per-player knowledge
 rather than a fact about the world.
 
+### Every exit pairs with an enter
+
+**An actor that leaves a region is always announced, whatever the reason.** Walking out, being
+destroyed, a level change, a streamed-out level, play stopping: all of them fire the exit events, and
+all of them hand you a live actor pointer, because the teardown cases are caught on `End Play` while
+the actor still exists.
+
+`On Actor Departed Region` fires alongside every closure-edge exit and adds the reason, so you can tell
+a walk-out from a disconnect when it matters:
+
+| Reason | When |
+|---|---|
+| `Crossed` | The actor moved out of the volume |
+| `Destroyed` | Destroyed while still inside: death, despawn, an explicit Destroy |
+| `Level Transition` | The world is being torn down for travel |
+| `Removed` | The level holding the actor was streamed or removed out from under it |
+| `Shutdown` | Play is ending: PIE stopped, or the game is quitting |
+
+> [!TIP]
+> If you hold per-actor state, bind the departure event. It is the one that is guaranteed to arrive,
+> which is what stops a buff, a map entry or a spawned widget outliving the player who caused it.
+
 ### Discovery on a dormant PlayerState
 
 **Supported.** If your project sets its PlayerStates dormant to save bandwidth, a discovery recorded
@@ -214,6 +236,3 @@ region with a hole in the middle is two regions, or a shape that wraps around.
 - **No periodic engine.** Nothing here ticks. If you want something every two seconds while a player
   is in a region, start a timer on enter and clear it on exit.
 - **No replicated region state.** See the authority model above.
-- **No lifecycle guarantee on exit.** An actor destroyed inside a region is never told it left, and at
-  level teardown no exit arrives at all. Do not allocate on enter and free on exit. The Region
-  Listener reconciles itself on End Play for this reason.
