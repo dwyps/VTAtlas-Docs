@@ -33,8 +33,8 @@ from the wrong branch at three in the morning.
 
 ## 3. Place a volume
 
-Drag a **VT Atlas Region Volume (Box)** into the level from the Place Actors panel, under **VT Atlas**.
-Size it like any trigger.
+Open the Place Actors panel (Window > Place Actors), type `region` in its search box, and drag a
+**VT Atlas Region Volume (Box)** into the level. Size it like any trigger.
 
 Set its **Region Tag** to one of your tags. That is the minimum: a volume with a tag is a region.
 
@@ -56,7 +56,7 @@ Two ways. Both take about a minute.
 
 **On the actor itself**, if the actor cares about its own crossings. Open the Blueprint, Class
 Settings, Implemented Interfaces, add **VT Atlas Region Occupant**. Now right-click in the event graph
-and add **On VTATL Region Entered Or Nested**. It gives you the region tag.
+and add **On VTATLRegion Entered or Nested**. It gives you the region tag.
 
 **With a component**, if a designer needs to configure it. Add a **VT Atlas Region Listener** to the
 actor. In the details panel, set **Watched Regions** to the regions this actor cares about, or leave it
@@ -68,8 +68,9 @@ Authority** first. This is the single most common surprise; Concepts explains wh
 
 ## 6. Optional: name your regions for players
 
-Create a **VT Atlas Region Definition** asset (right-click in the content browser, VT Atlas). Give it
-the region tag and a **Display Name**, then point your volumes at it instead of tagging them
+Create a **VT Atlas Region Definition** asset: right-click in the Content Browser, choose
+Miscellaneous > Data Asset, and pick **VT Atlas Region Definition** from the class list. Give it the
+region tag and a **Display Name**, then point your volumes at it instead of tagging them
 individually.
 
 Worth doing as soon as more than one volume shares a region: the name lives in one place, and the
