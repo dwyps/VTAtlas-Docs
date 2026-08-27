@@ -1,4 +1,5 @@
 ---
+slug: /concepts
 description: "How regions, gameplay tags, exact and nested queries, authority and dwell time fit together."
 ---
 

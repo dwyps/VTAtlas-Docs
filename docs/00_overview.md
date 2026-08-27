@@ -1,4 +1,5 @@
 ---
+slug: /overview
 description: "Tag-driven regions and zones for Unreal Engine 5.8. What VT Atlas is, and where to start."
 ---
 
@@ -34,7 +35,7 @@ vault sits inside a hall. The tag said so.
 Every query and every event comes in two forms, and they mean the same thing wherever you see them.
 **Exact** is about volumes carrying precisely that tag. **Or Nested** counts the hierarchy too.
 
-Neither implies the other, which is why both exist. See [Concepts](./02-concepts.md)
+Neither implies the other, which is why both exist. See [Concepts](./02_concepts.md)
 for the case that catches people out.
 
 ## What is in the box
@@ -54,14 +55,14 @@ Unreal Engine **5.8**. Windows and Mac. No third-party plugin dependencies.
 
 ## Start here
 
-1. **[Setup](./01-getting-started/01-setup.md)** puts a working region in your level in about ten minutes.
-2. **[Sample Walkthrough](./01-getting-started/02-sample-walkthrough.md)** walks the shipped keep and
+1. **[Setup](./01_getting_started/01_setup.md)** puts a working region in your level in about ten minutes.
+2. **[Sample Walkthrough](./01_getting_started/02_sample_walkthrough.md)** walks the shipped keep and
    shows per-player discovery with two players.
-3. **[Concepts](./02-concepts.md)** is the one page worth reading end to end before
+3. **[Concepts](./02_concepts.md)** is the one page worth reading end to end before
    you build on it.
-4. **[API Tour](./03-reference/01-api-tour.md)** when you know what you want and need the node name.
+4. **[API Tour](./03_reference/01_api_tour.md)** when you know what you want and need the node name.
 
-Something not behaving? **[Troubleshooting](./04-support/01-troubleshooting.md)** quotes every message
+Something not behaving? **[Troubleshooting](./04_support/01_troubleshooting.md)** quotes every message
 the plugin can print.
 
 ## These docs are an Obsidian vault

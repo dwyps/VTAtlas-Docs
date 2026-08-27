@@ -1,4 +1,5 @@
 ---
+slug: /getting-started/setup
 description: "Install VT Atlas, place your first region volume and see it fire. Ten minutes, no C++."
 ---
 

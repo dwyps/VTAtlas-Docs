@@ -1,4 +1,5 @@
 ---
+slug: /support/troubleshooting
 description: "Every message VT Atlas can print, what causes it, and what to do about it."
 ---
 

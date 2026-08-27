@@ -1,4 +1,5 @@
 ---
+slug: /reference/performance
 description: "Measured costs: query scaling, the spatial-structure comparison, and the oversized-volume guard."
 ---
 

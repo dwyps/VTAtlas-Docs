@@ -1,4 +1,5 @@
 ---
+slug: /support/changelog
 description: "Release history for VT Atlas, following Keep a Changelog."
 ---
 
