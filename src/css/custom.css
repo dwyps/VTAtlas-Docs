@@ -1,30 +1,54 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * VT Atlas documentation theme.
+ *
+ * These are Vestro's LIVE palette, "Carbon — true black / lime", which is v2.js PALETTES id "p24" on
+ * vestro.hr. It is applied at RUNTIME there, so reading src/tokens/colors.css gives the wrong answer:
+ * that file still holds palette p1 ("Ember", orange #FF5A2C), which the runtime overwrites on every
+ * page load. The docs shipped in that stale orange until 2026-08-27.
+ *
+ *   dark   bg #070809   panel #121417   text #F4F6F7   secondary #899099   accent #B6FF00
+ *   light  bg #EEF0EC   panel #FAFBF8   text #0C0E0F   secondary #5E646B   accent #4F7A00
+ *
+ * Lime on near-black is the identity; the light mode uses the darker accent because #B6FF00 on white
+ * fails contrast for body-sized text.
  */
 
-/* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
-  --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --ifm-color-primary: #4F7A00;
+  --ifm-color-primary-dark: #476E00;
+  --ifm-color-primary-darker: #436800;
+  --ifm-color-primary-darkest: #375600;
+  --ifm-color-primary-light: #578600;
+  --ifm-color-primary-lighter: #5B8C00;
+  --ifm-color-primary-lightest: #679E00;
+
+  --ifm-background-color: #EEF0EC;
+  --ifm-background-surface-color: #FAFBF8;
+  --ifm-font-color-base: #0C0E0F;
+  --ifm-code-font-size: 92%;
+  --docusaurus-highlighted-code-line-bg: rgba(79, 122, 0, 0.12);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-color-primary: #B6FF00;
+  --ifm-color-primary-dark: #A4E600;
+  --ifm-color-primary-darker: #9BD900;
+  --ifm-color-primary-darkest: #80B300;
+  --ifm-color-primary-lighter: #C0FF26;
+  --ifm-color-primary-lightest: #CDFF59;
+  --ifm-color-primary-light: #BCFF13;
+
+  --ifm-background-color: #070809;
+  --ifm-background-surface-color: #121417;
+  --ifm-font-color-base: #F4F6F7;
+  --ifm-navbar-background-color: #070809;
+  --ifm-footer-background-color: #121417;
+  --docusaurus-highlighted-code-line-bg: rgba(182, 255, 0, 0.12);
+}
+
+/* Lime is a signal colour: on a dark surface it is the accent, and as a link it should read as one
+   without shouting on every line of body text. */
+[data-theme='dark'] .menu__link--active,
+[data-theme='dark'] .navbar__link--active {
+  color: var(--ifm-color-primary);
 }
