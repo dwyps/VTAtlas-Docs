@@ -91,13 +91,24 @@ alt text.
 
 ## Deployment
 
-Cloudflare Pages, Git integration (never Direct Upload, which cannot be converted to Git later).
+Cloudflare Pages project `vtatlas-docs`, Git integration (never Direct Upload, which cannot be
+converted to Git later).
 
 | Setting | Value |
 |---|---|
 | Build command | `npm run build` |
 | Output directory | `build` |
 | Node | pinned by `.nvmrc` |
+
+> [!IMPORTANT]
+> **A push to `main` does not currently trigger a build.** The project was created through the
+> Cloudflare API rather than the dashboard's Connect-to-Git flow, so Cloudflare can clone the repo but
+> the GitHub App's push events never reach it. Measured: a push produced no deployment, and an
+> API-triggered build of the same commit succeeded.
+>
+> Fix it once on GitHub: **Settings > Applications > Cloudflare Pages > Repository access**, add
+> `VTAtlas-Docs`. Until then, deploy with `python tools/deploy.py`, which triggers a build and polls
+> it to completion using the token `wrangler login` already stored.
 
 ## Versioning
 
