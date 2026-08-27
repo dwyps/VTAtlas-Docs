@@ -1,4 +1,5 @@
 ---
+slug: /getting-started/sample-walkthrough
 description: "A guided tour of the sample keep: nested regions, per-player discovery, and what the minimap shows."
 ---
 

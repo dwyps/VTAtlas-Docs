@@ -1,4 +1,5 @@
 ---
+slug: /reference/api-tour
 description: "Every Blueprint-callable node in VT Atlas, grouped by the question you are trying to ask."
 ---
 
