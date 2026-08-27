@@ -7,7 +7,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'VT Atlas',
   tagline: 'Tag-driven regions and zones for Unreal Engine 5.8',
-  favicon: 'img/favicon.ico',
+  // TODO: favicon once artwork exists. Same reason as the logo.
 
   future: {
     // OFF deliberately. v4 is unreleased and 3.10 was announced as the last v3.x minor, so this opts
