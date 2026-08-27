@@ -98,6 +98,8 @@ read as yours.
 Branch on the boolean, always. Empty means nobody attached data to that region, which is a normal
 state and not an error.
 
+![A Blueprint function graph: a VT Atlas Region Subsystem node feeding Get Region User Data, whose Return Value drives a Branch, whose True pin runs into Get Instanced Struct Value, which unpacks Out User Data into a struct returned from the function.](./media/blueprint_user_data.avif)
+
 ## Placing regions
 
 Four actors, all placed and sized like any trigger:
