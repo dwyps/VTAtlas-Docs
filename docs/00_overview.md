@@ -14,6 +14,46 @@ questions with one honest answer each:
 
 Everything is callable from Blueprint. Nothing needs C++.
 
+![The sample keep in the editor, with four nested region volumes drawn as coloured wireframe boxes: an
+outer approach region, the keep walls, the hall inside it, and a small vault at the deepest
+level.](./media/regions_nested.avif)
+
+*Four regions in the sample map. The colour of each boundary comes from how deep its tag sits, so
+nesting is visible at a glance in the viewport.*
+
+## What people build with it
+
+Regions are the plumbing under a lot of things that look unrelated.
+
+**A location banner.** "The Drowned Keep" fades in when the player arrives. Add a **Region Listener**
+component, set a display name on the volume, bind **On Single Region Changed**. Two nodes and a widget.
+
+**A map that fills in as you explore.** Discovery is per player, server-authoritative and replicated to
+its owner only, so one player's map is genuinely not the other's. The sample keep ships a working
+minimap doing exactly this, fogged until visited.
+
+**Music and ambience that follow the room.** Crossfade on the region enter and exit events. Because
+regions nest, a track set on `Castle` keeps playing through every room inside it unless a child region
+overrides it.
+
+**Rules that apply in a place.** No damage inside the tavern, no building in the plaza, no fast travel
+underground. One `Is Actor In Region` check on the server, gated by the tag you already named.
+
+**An encounter that arms when the room is occupied.** **On Region Occupied** fires when a region gains
+its first occupant and **On Region Vacated** when it loses its last, so the boss wakes when players
+arrive and resets when they leave. It carries no actor, so it cannot drift the way a hand-counted total
+does.
+
+**Objectives phrased as places.** "Reach the docks" is a region enter event. "Survive two minutes in the
+arena" is **Get Time In Region**. "Visit every district" is the discovery list.
+
+**Behaviour attached to the place instead of the actor.** A **Region Feature** on a region definition
+runs when that region is occupied and stops when it empties, with nothing placed in the level and
+nothing holding a reference to it. The sample uses one to light a vault when someone walks in.
+
+**Telemetry.** Dwell time per region tells you where players actually spend their session, which is
+usually not where you assumed.
+
 ## Regions are your tags
 
 VT Atlas ships no region vocabulary and imposes no depth. You name your regions in the project's

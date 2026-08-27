@@ -11,6 +11,11 @@ question you would otherwise have to take on trust.
 
 Open `L_VTATL_Keep` and press Play.
 
+![The sample keep seen from the west gate: stone curtain walls with corner towers around an open
+courtyard.](./media/sample_keep.avif)
+
+*The west gate, where player one starts.*
+
 ## What you are looking at
 
 A square keep with a gate on each side, a courtyard on the west, a hall on the east, a vault off the
