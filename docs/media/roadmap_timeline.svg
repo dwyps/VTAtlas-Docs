@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" width="900" height="380"
+     role="img" aria-labelledby="rt rd">
+  <title id="rt">VT Atlas release timeline</title>
+  <desc id="rd">A left-to-right timeline with four stops. Version 1.0, targeted at the third quarter
+    of 2026 and marked shipping, carries regions from your tags, box, sphere, capsule and spline
+    volumes, per-player discovery, per-volume user data, region features, and exits that pair with
+    enters. Version 1.1, targeted at the fourth quarter of 2026, carries save and restore of
+    discovery and an editor region browser. Version 1.2, targeted at the first quarter of 2027,
+    carries region volume presets and a spatial index for very large levels. A final unscheduled
+    stop marked considering, from 2027 onward, holds an optional Gameplay Ability System module,
+    region audio helpers, shapes from static meshes and net relevancy hints. A note reads: targets,
+    not commitments, and the arrow continues past the last stop.</desc>
+
+  <!--
+    PALETTE: Vestro "Carbon" (p24). Same reasoning as tag_hierarchy.svg: this carries its own
+    background because an <img>-loaded SVG cannot follow the docs' light/dark toggle, and no single
+    lime works on both a white and a black page.
+
+    BRIGHTNESS ENCODES CERTAINTY, and that is the whole point of the drawing. v1.0 is solid because
+    it exists. Each later stop is dimmer, and the last one is dashed with no version number at all,
+    because those items may never ship. A timeline that drew every stop identically would be
+    claiming a confidence the roadmap text explicitly refuses to claim.
+  -->
+  <rect x="0" y="0" width="900" height="380" fill="#121417"/>
+  <rect x="0.5" y="0.5" width="899" height="379" fill="none" stroke="#2A3038"/>
+
+  <g font-family="'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11"
+     letter-spacing="1.6">
+    <text x="30" y="36" fill="#B6FF00">RELEASE TIMELINE</text>
+    <text x="870" y="36" fill="#4A5158" text-anchor="end">VT ATLAS</text>
+  </g>
+
+  <!-- the spine, fading out to the right because the far end is not scheduled -->
+  <defs>
+    <linearGradient id="spine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"    stop-color="#B6FF00"/>
+      <stop offset="0.34" stop-color="#8FC91A"/>
+      <stop offset="0.68" stop-color="#5C7A1F"/>
+      <stop offset="1"    stop-color="#333B42"/>
+    </linearGradient>
+  </defs>
+  <line x1="70" y1="150" x2="836" y2="150" stroke="url(#spine)" stroke-width="2"/>
+  <path d="M836 144 L852 150 L836 156 Z" fill="#333B42"/>
+
+  <!-- ── v1.0 ─────────────────────────────────────────────────────────────── -->
+  <circle cx="90" cy="150" r="9" fill="#B6FF00"/>
+  <line x1="90" y1="163" x2="90" y2="186" stroke="#B6FF00" stroke-width="1"/>
+  <g font-family="Inter, system-ui, sans-serif">
+    <text x="90" y="86"  font-size="19" font-weight="700" fill="#F4F6F7" text-anchor="middle">v1.0</text>
+    <text x="90" y="106" font-size="12" fill="#B6FF00" text-anchor="middle"
+          font-family="'JetBrains Mono', ui-monospace, monospace" letter-spacing="0.8">Q3 2026</text>
+    <text x="90" y="126" font-size="10.5" fill="#0C0E0F" text-anchor="middle" opacity="0"></text>
+  </g>
+  <rect x="61" y="114" width="58" height="17" fill="#B6FF00"/>
+  <text x="90" y="126.5" font-size="9.5" fill="#0C0E0F" text-anchor="middle" font-weight="700"
+        font-family="'JetBrains Mono', ui-monospace, monospace" letter-spacing="1">SHIPPING</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#C6CCD2" text-anchor="middle">
+    <text x="90" y="206">Regions from your tags</text>
+    <text x="90" y="226">Box, sphere, capsule, spline</text>
+    <text x="90" y="246">Per-player discovery</text>
+    <text x="90" y="266">Per-volume user data</text>
+    <text x="90" y="286">Region features</text>
+    <text x="90" y="306">Exits that pair with enters</text>
+  </g>
+
+  <!-- ── v1.1 ─────────────────────────────────────────────────────────────── -->
+  <circle cx="310" cy="150" r="8" fill="#121417" stroke="#9BD436" stroke-width="2.5"/>
+  <line x1="310" y1="162" x2="310" y2="186" stroke="#9BD436" stroke-width="1"/>
+  <g font-family="Inter, system-ui, sans-serif">
+    <text x="310" y="86"  font-size="19" font-weight="700" fill="#F4F6F7" text-anchor="middle">v1.1</text>
+    <text x="310" y="106" font-size="12" fill="#9BD436" text-anchor="middle"
+          font-family="'JetBrains Mono', ui-monospace, monospace" letter-spacing="0.8">Q4 2026</text>
+  </g>
+  <rect x="277.5" y="114" width="65" height="17" fill="none" stroke="#9BD436"/>
+  <text x="310" y="126.5" font-size="9.5" fill="#9BD436" text-anchor="middle" font-weight="700"
+        font-family="'JetBrains Mono', ui-monospace, monospace" letter-spacing="1">PLANNED</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#C6CCD2" text-anchor="middle">
+    <text x="310" y="206">Save and restore discovery</text>
+    <text x="310" y="226">Editor region browser</text>
+  </g>
+
+  <!-- ── v1.2 ─────────────────────────────────────────────────────────────── -->
+  <circle cx="530" cy="150" r="8" fill="#121417" stroke="#7FA82B" stroke-width="2.5"/>
+  <line x1="530" y1="162" x2="530" y2="186" stroke="#7FA82B" stroke-width="1"/>
+  <g font-family="Inter, system-ui, sans-serif">
+    <text x="530" y="86"  font-size="19" font-weight="700" fill="#F4F6F7" text-anchor="middle">v1.2</text>
+    <text x="530" y="106" font-size="12" fill="#7FA82B" text-anchor="middle"
+          font-family="'JetBrains Mono', ui-monospace, monospace" letter-spacing="0.8">Q1 2027</text>
+  </g>
+  <rect x="497.5" y="114" width="65" height="17" fill="none" stroke="#7FA82B"/>
+  <text x="530" y="126.5" font-size="9.5" fill="#7FA82B" text-anchor="middle" font-weight="700"
+        font-family="'JetBrains Mono', ui-monospace, monospace" letter-spacing="1">PLANNED</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#C6CCD2" text-anchor="middle">
+    <text x="530" y="206">Region volume presets</text>
+    <text x="530" y="226">Spatial index for very</text>
+    <text x="530" y="246">large levels</text>
+  </g>
+
+  <!-- ── unscheduled ──────────────────────────────────────────────────────── -->
+  <circle cx="750" cy="150" r="8" fill="#121417" stroke="#5C7A1F" stroke-width="2"
+          stroke-dasharray="3 3"/>
+  <line x1="750" y1="162" x2="750" y2="186" stroke="#5C7A1F" stroke-width="1" stroke-dasharray="3 3"/>
+  <g font-family="Inter, system-ui, sans-serif">
+    <text x="750" y="86"  font-size="19" font-weight="700" fill="#899099" text-anchor="middle">—</text>
+    <text x="750" y="106" font-size="12" fill="#5C7A1F" text-anchor="middle"
+          font-family="'JetBrains Mono', ui-monospace, monospace" letter-spacing="0.8">2027 +</text>
+  </g>
+  <rect x="705.5" y="114" width="89" height="17" fill="none" stroke="#5C7A1F" stroke-dasharray="3 3"/>
+  <text x="750" y="126.5" font-size="9.5" fill="#5C7A1F" text-anchor="middle" font-weight="700"
+        font-family="'JetBrains Mono', ui-monospace, monospace" letter-spacing="1">CONSIDERING</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#899099" text-anchor="middle">
+    <text x="750" y="206">Optional GAS module</text>
+    <text x="750" y="226">Region audio helpers</text>
+    <text x="750" y="246">Shapes from static meshes</text>
+    <text x="750" y="266">Net relevancy hints</text>
+  </g>
+
+  <line x1="30" y1="334" x2="870" y2="334" stroke="#2A3038"/>
+  <g font-family="'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5"
+     fill="#899099">
+    <text x="30" y="358">// Targets, not commitments. Items move when they are ready, and a real project blocked on one moves it up.</text>
+  </g>
+</svg>

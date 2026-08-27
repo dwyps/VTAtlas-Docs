@@ -12,6 +12,19 @@ versioning. Every breaking change carries a migration note saying what to do abo
 
 ### Added
 
+- **Every region volume can carry a struct you define.** The plugin owns a small fixed set of
+  per-volume settings, and every project wants one more: an ambience bank, a PvP flag, a difficulty
+  band, a light preset. Rather than guess at those, each volume has a **User Data** slot holding a
+  struct from your own code, which VT Atlas stores and hands back without ever reading a field of it.
+
+  It is an instanced struct, so Blueprint gets Make and Break nodes and no C++ is required. Read it
+  with `Get Region User Data`, or in C++ with the templated `GetRegionUserDataPtr<T>`, which returns
+  null rather than reinterpreting when the volume carries a different struct than the one you asked
+  for. Empty is reported as empty rather than as a zeroed struct, because a caller that cannot tell
+  those apart applies defaults nobody attached.
+
+  Migration: none. The slot is empty on every existing volume and ignored when empty.
+
 - **Every exit now pairs with an enter.** An actor that leaves a region is announced whatever the
   reason: walking out, being destroyed, a level change, a streamed-out level, or play ending. All of
   them fire the existing exit events and all of them hand you a live actor, because the teardown cases
