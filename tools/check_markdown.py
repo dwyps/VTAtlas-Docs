@@ -31,16 +31,25 @@ DOCS = Path(__file__).resolve().parent.parent / "docs"
 # Constructs that are legal Obsidian and either break or silently misrender in Docusaurus, plus the
 # reverse: Docusaurus dialect that shows as literal junk in the vault.
 BANNED = [
-    (re.compile(r"!?\[\[[^\]]+\]\]"), "Obsidian wikilink or embed. Use a relative [text](./file.md) link; "
-                                      "turn OFF 'Use [[Wikilinks]]' in Obsidian settings."),
+    (re.compile(r"!?\[\[[^\]]+\]\]"),
+     ("Obsidian wikilink or embed. Use a relative [text](./file.md) link; "
+      "turn OFF 'Use [[Wikilinks]]' in Obsidian settings.")),
     (re.compile(r"%%"), "Obsidian comment. INVISIBLE in Obsidian's editor and PUBLISHED in full on the site."),
     (re.compile(r"==[^=\n]+=="), "Obsidian highlight. Renders as literal '==' on the site."),
-    (re.compile(r"(?m)^:::"), "Docusaurus directive. Renders as literal ':::' lines in Obsidian. "
-                              "Use an uppercase GitHub alert instead: > [!NOTE]"),
+    (re.compile(r"(?m)^:::"),
+     ("Docusaurus directive. Renders as literal ':::' lines in Obsidian. "
+      "Use an uppercase GitHub alert instead: > [!NOTE]")),
     (re.compile(r"(?m)^!!!\s"), "MkDocs admonition. Renders as literal text in both tools."),
     (re.compile(r"(?m)^import\s+\S+\s+from\s"), "MDX import. Not valid in CommonMark mode and meaningless in Obsidian."),
     (re.compile(r"(?m)^\s*\^[a-zA-Z0-9-]+\s*$"), "Obsidian block id. Meaningless outside Obsidian."),
 ]
+
+# Checked against the RAW text, since strip_code blanks fenced blocks and this rule is about the
+# fence itself. Measured 2026-08-27: a ```mermaid fence renders correctly in Obsidian and is
+# replaced by an empty HTML comment on the site, because Docusaurus turns it into a React
+# component and CommonMark mode has no JSX to render one. The author sees a diagram, the buyer
+# sees nothing, and the build stays green. Commit an SVG instead: it renders in both.
+MERMAID_FENCE = re.compile(r"(?m)^ {0,3}```+\s*mermaid\b")
 
 # The C++ hazard. Only uppercase-initial identifiers, so <br> and <https://...> are handled separately.
 ANGLE_TYPE = re.compile(r"<([A-Z][A-Za-z0-9_]*)\s*>")
@@ -93,7 +102,7 @@ def check_frontmatter(path: Path, text: str, findings: list[str]) -> None:
         return
     # The exact failure that broke the first build: prose contains colons, and an unquoted value with
     # ': ' in it parses as a nested mapping. The build error names a column, not the cause.
-    if not (desc.startswith('"') or desc.startswith("'")) and ": " in desc:
+    if not desc.startswith(('"', "'")) and ": " in desc:
         findings.append(f"{rel}:1: unquoted 'description' contains ': ', which YAML reads as a mapping "
                         f"entry and fails the build. Wrap it in double quotes.")
 
@@ -118,6 +127,12 @@ def check_file(path: Path) -> list[str]:
     check_links(path, text, findings)
 
     prose = strip_code(text)
+
+    for m in MERMAID_FENCE.finditer(text):
+        findings.append(
+            f"{rel}:{line_of(text, m.start())}: mermaid fence. It renders in Obsidian and is "
+            f"replaced by an empty comment on the site, because CommonMark mode cannot render the "
+            f"React component Docusaurus converts it into. Commit an SVG under media/ instead.")
 
     for pattern, why in BANNED:
         for m in pattern.finditer(prose):

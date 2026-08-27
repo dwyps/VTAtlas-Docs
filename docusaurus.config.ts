@@ -7,7 +7,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'VT Atlas',
   tagline: 'Tag-driven regions and zones for Unreal Engine 5.8',
-  // TODO: favicon once artwork exists. Same reason as the logo.
+  favicon: 'img/favicon.ico',
 
   future: {
     // OFF deliberately. v4 is unreleased and 3.10 was announced as the last v3.x minor, so this opts
@@ -38,7 +38,12 @@ const config: Config = {
     // documented cost (issue 9092) is losing <Tabs>, live code blocks and per-page <head> injection.
     // None of those are used here; title, description and og tags come from frontmatter and this file.
     format: 'md',
-    mermaid: true,
+    // NO mermaid. MEASURED 2026-08-27: with format 'md' a ```mermaid fence is replaced by an
+    // EMPTY HTML COMMENT on the site. Docusaurus's transform converts the fence into a React
+    // component and CommonMark mode has no JSX to render one, so the diagram renders perfectly
+    // in Obsidian and vanishes for the buyer, with a green build either way. Diagrams are
+    // committed SVGs under media/, which render in both. tools/check_markdown.py rejects the
+    // fence so this cannot come back quietly.
     hooks: {
       // Verified against @docusaurus/types 3.10.2: the top-level onBrokenMarkdownLinks still exists
       // but carries a "TODO Docusaurus v4 remove" comment, and markdown.hooks is the forward-compatible
@@ -49,7 +54,6 @@ const config: Config = {
   },
 
   themes: [
-    '@docusaurus/theme-mermaid',
     [
       // Local search rather than Algolia. Algolia's DocSearch terms require displaying their logo
       // linking back to algolia.com on the search UI, and eligibility is by application. Neither
@@ -89,15 +93,14 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // TODO: og card at 1200x630 once artwork exists. Omitted rather than shipping
-    // Docusaurus's own social card.
+    image: 'img/og.png',
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
     },
     navbar: {
       title: 'VT Atlas',
-      // TODO: logo once artwork exists. Title-only for now rather than Docusaurus's logo.
+      logo: {alt: 'VT Atlas', src: 'img/logo.svg'},
       items: [
         {type: 'docSidebar', sidebarId: 'docsSidebar', position: 'left', label: 'Documentation'},
         {type: 'docsVersionDropdown', position: 'right'},

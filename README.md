@@ -16,7 +16,7 @@ That works because of three settings:
 - `markdown.format: 'md'` in `docusaurus.config.ts`. CommonMark, not MDX. MDX fails on C++ generics and
   its `import` and JSX syntax is meaningless inside Obsidian.
 - `useMarkdownLinks: true` and `newLinkFormat: "relative"` in `docs/.obsidian/app.json`. Obsidian keeps
-  its link autocomplete but writes `[Concepts](./02-concepts.md)`, which Docusaurus resolves natively.
+  its link autocomplete but writes `[Concepts](./02_concepts.md)`, which Docusaurus resolves natively.
 - Numeric prefixes on folders and files. Docusaurus strips them from URLs and sidebar labels; Obsidian
   sorts alphabetically. The vault tree and the site sidebar therefore read in the same order, with no
   `sidebar_position` frontmatter anywhere.
@@ -66,13 +66,13 @@ Stills are **AVIF**, clips are **H.264 MP4**, and neither goes near Git LFS.
 # still
 ffmpeg -y -i raw/shot.png -vf "format=rgb24,scale='min(1600,iw)':-2:flags=lanczos" \
   -c:v libaom-av1 -still-picture 1 -crf 32 -cpu-used 2 -pix_fmt yuv444p -frames:v 1 \
-  docs/03-reference/media/shot.avif
+  docs/03_reference/media/shot.avif
 
 # clip (drop -tune stillimage and use -crf 23 for real gameplay)
 ffmpeg -y -ss IN -t DUR -i raw/clip.mkv \
   -vf "scale='min(1280,iw)':-2:flags=lanczos,format=yuv420p" \
   -c:v libx264 -preset veryslow -crf 26 -tune stillimage -profile:v high -level 4.0 \
-  -movflags +faststart -an docs/01-getting-started/media/clip.mp4
+  -movflags +faststart -an docs/01_getting_started/media/clip.mp4
 ```
 
 `yuv444p` keeps coloured UI text sharp. No animated GIF: a loop over five seconds cannot offer the
@@ -80,7 +80,14 @@ pause control WCAG 2.2.2 requires, and `<video controls>` gets it for free. No L
 smudges LFS pointers during clone is undocumented, and the failure mode is a deployed site full of
 130-byte text files where the screenshots belong.
 
-Diagrams are Mermaid fences, native in both tools. Put `accTitle:` and `accDescr:` in every one.
+Diagrams are **committed SVGs** under a page's `media/` folder, not Mermaid fences.
+
+Mermaid looks like the obvious choice and does not work here: with `markdown.format: 'md'` a
+```` ```mermaid ```` fence is replaced by an empty HTML comment on the site, because Docusaurus turns
+it into a React component and CommonMark mode has no JSX to render one. It renders correctly in
+Obsidian, so the author sees a diagram and the reader sees nothing, and the build stays green. The
+gate rejects the fence for that reason. Give every SVG a `<title>` and `<desc>` and reference it with
+alt text.
 
 ## Deployment
 

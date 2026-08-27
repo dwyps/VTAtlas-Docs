@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 300" width="620" height="300"
+     role="img" aria-labelledby="t d">
+  <title id="t">One volume, four regions</title>
+  <desc id="d">Four nested boxes labelled Castle, Castle.Keep, Castle.Keep.Hall and
+    Castle.Keep.Hall.Vault, each inside the one before it. A single actor marker sits in the innermost
+    box, and a note reads: one volume placed, four regions entered.</desc>
+
+  <g fill="none" stroke-width="2">
+    <rect x="14"  y="14"  width="420" height="240" rx="12" stroke="#7A392B"/>
+    <rect x="46"  y="46"  width="356" height="176" rx="10" stroke="#A8452C"/>
+    <rect x="78"  y="78"  width="292" height="112" rx="9"  stroke="#D9502C"/>
+    <rect x="110" y="110" width="228" height="48"  rx="8"  stroke="#FF5A2C" stroke-width="2.5"/>
+  </g>
+
+  <g font-family="Inter, system-ui, sans-serif" font-size="13">
+    <text x="26"  y="34"  fill="#7A392B">Castle</text>
+    <text x="58"  y="66"  fill="#A8452C">Castle.Keep</text>
+    <text x="90"  y="98"  fill="#D9502C">Castle.Keep.Hall</text>
+    <text x="122" y="130" fill="#FF5A2C">Castle.Keep.Hall.Vault</text>
+  </g>
+
+  <circle cx="310" cy="134" r="7" fill="#FF5A2C"/>
+  <line x1="317" y1="134" x2="470" y2="134" stroke="#FF5A2C" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+  <g font-family="Inter, system-ui, sans-serif" fill="#8A94A3">
+    <text x="478" y="123" font-size="13" font-weight="600" fill="#FF5A2C">One volume placed.</text>
+    <text x="478" y="143" font-size="13">Four regions entered.</text>
+    <text x="478" y="171" font-size="11.5">Nothing was told that a</text>
+    <text x="478" y="187" font-size="11.5">vault sits inside a hall.</text>
+    <text x="478" y="203" font-size="11.5">The tag said so.</text>
+  </g>
+</svg>
