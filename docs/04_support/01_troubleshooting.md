@@ -145,5 +145,6 @@ Neither is cheaper to dispatch. See Concepts.
 
 **Is an exit guaranteed after an enter?**
 
-No, and do not build on it. An actor destroyed inside a region is never told it left, and at level
-teardown no exit arrives at all.
+Yes. Walking out, being destroyed, a level change, a streamed-out level and play ending all fire
+the exit events, and all of them hand you a live actor. Bind `On Actor Departed Region` if you also
+need to know which of those happened.
