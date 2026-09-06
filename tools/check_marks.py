@@ -21,7 +21,11 @@ way the Markdown ones are:
    an element left in the null or a foreign namespace, a rect of zero width, a rect parked off the
    canvas: each of those parses, each satisfies a clause-by-clause reading of the rules below, and
    a browser draws none of them. A gate that counts elements instead of counting what is drawn
-   calls such a file clean, which is the failure it exists to catch.
+   calls such a file clean, which is the failure it exists to catch. The first two are reported by
+   name, because a mark has no reason to carry either. The last two are not findings on their own:
+   a zero-size or an off-canvas rect is legal SVG that paints nothing, so it is denied only the
+   credit of answering for the file, and a mark whose shapes all paint nothing is reported as
+   drawing nothing.
 
 The rule set is VT_SUITE_ICON_RULES section 6 and the install brief, restated as checks: the root
 is <svg> with viewBox="0 0 128 128" and no width or height; the only shapes are <rect> and
@@ -67,6 +71,11 @@ INTEGER = re.compile(r"^-?\d+$")
 DOCTYPE = re.compile(r"<!\s*(DOCTYPE|ENTITY)", re.IGNORECASE)
 # Also on the raw text: a manifest can sit in a comment, which the parser drops.
 C2PA = re.compile(r"c2pa", re.IGNORECASE)
+# And on the raw text for the same reason. ElementTree discards processing instructions, so no
+# parsed clause below can see one, and an <?xml-stylesheet?> repaints the whole drawing when the
+# file is opened on its own. That is the "nothing else colours it" rule, and it would otherwise
+# pass in silence. The XML prolog is the one processing instruction a master carries.
+PROCESSING_INSTRUCTION = re.compile(r"<\?(?!xml[\s?])", re.IGNORECASE)
 
 # The whitelists are the whole of "nothing else colours it". Stroke, style, opacity, class and
 # transform are each an attribute that makes the drawing differ from a flat fill of the shapes, and
@@ -140,6 +149,9 @@ def check_text(text: str) -> list[str]:
     findings: list[str] = []
     if C2PA.search(text):
         findings.append("carries a C2PA manifest or a mention of one; only the stripped copy ships")
+    if PROCESSING_INSTRUCTION.search(text):
+        findings.append("carries a processing instruction; the parser drops one and an "
+                        "<?xml-stylesheet?> repaints the drawing, so only the XML prolog is allowed")
     if DOCTYPE.search(text):
         return findings + ["carries a DOCTYPE or entity declaration; a mark has neither"]
     try:
@@ -272,6 +284,9 @@ MUTATIONS: list[tuple[str, Edit, str]] = [
     ("transform on the root", lambda s: s.replace("viewBox=", 'transform="scale(1)" viewBox='), "transform"),
     ("no SVG namespace", lambda s: s.replace(' xmlns="http://www.w3.org/2000/svg"', ""), "namespace"),
     ("a metadata element", lambda s: s.replace(ZONE, "<metadata>x</metadata>" + ZONE), "metadata"),
+    ("a stylesheet processing instruction",
+     lambda s: s.replace("<svg", '<?xml-stylesheet type="text/css" href="repaint.css"?><svg'),
+     "processing instruction"),
     ("a style element", lambda s: s.replace(ZONE, "<style>rect{fill:red}</style>" + ZONE), "style"),
     ("a defs element", lambda s: s.replace(ZONE, "<defs></defs>" + ZONE), "defs"),
     ("a text element", lambda s: s.replace(ZONE, '<text x="0" y="0">VT</text>' + ZONE), "text"),
