@@ -3,7 +3,9 @@
 .hero {
   padding: 6rem 0 5rem;
   text-align: center;
-  background: linear-gradient(180deg, var(--ifm-color-primary-darkest) 0%, transparent 100%);
+  /* The gradient's start is a SURFACE, so it does not follow the primary, which in light is the ink
+     used for links. custom.css sets --vt-hero-from per theme. */
+  background: linear-gradient(180deg, var(--vt-hero-from) 0%, transparent 100%);
 }
 
 .heroTitle {

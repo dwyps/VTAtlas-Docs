@@ -14,6 +14,13 @@ than wrong.
 
 No secret to manage: it reuses the OAuth token wrangler already stores, so it works on the machine
 that is already logged in and nowhere else, which is the right blast radius for a deploy button.
+
+WHY IT REFUSES. The build is of the HEAD of main on GitHub, never of this working tree (the API is
+explicit: "The HEAD of the branch will be used"). Measured 2026-08-27: a run printed
+`from e3675727` while HEAD was `68b291b`, and the live site was the older commit. So this script
+runs both authoring gates, then refuses unless the tree is exactly what Cloudflare will build:
+nothing uncommitted or untracked, and HEAD equal to origin/main after a fetch. A green gate on any
+other tree says nothing about the commit that goes live.
 """
 
 from __future__ import annotations
@@ -22,6 +29,7 @@ import json
 import os
 import pathlib
 import re
+import subprocess
 import sys
 import time
 import urllib.error
@@ -30,6 +38,47 @@ import urllib.request
 ACCOUNT = "418f8af4bf80b3186465e9ebcee68a5d"
 PROJECT = "vtatlas-docs"
 API = "https://api.cloudflare.com/client/v4"
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+GATES = ("tools/check_markdown.py", "tools/check_marks.py")
+
+
+def git(*args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True)
+
+
+def gates_are_green() -> bool:
+    """Both authoring gates, run on this tree with their own output shown. They are hand-run
+    otherwise, and a deploy is the one moment their verdict is about to become the live site."""
+    for gate in GATES:
+        print(f"deploy: running {gate}", flush=True)
+        if subprocess.run([sys.executable, gate], cwd=ROOT).returncode != 0:
+            print(f"deploy: refused, {gate} is red.")
+            return False
+    return True
+
+
+def why_this_tree_is_not_the_build() -> list[str]:
+    """Every reason the tree the gates just passed is not the commit Cloudflare will build."""
+    fetched = git("fetch", "--quiet", "origin")
+    if fetched.returncode != 0:
+        return [f"git fetch origin failed, so origin/main cannot be compared: "
+                f"{fetched.stderr.strip() or fetched.returncode}"]
+
+    reasons: list[str] = []
+    status = git("status", "--porcelain")
+    if status.stdout.strip():
+        lines = "\n".join(f"      {line.rstrip()}" for line in status.stdout.splitlines() if line.strip())
+        reasons.append(f"the working tree has uncommitted or untracked changes:\n{lines}")
+
+    head = git("rev-parse", "HEAD").stdout.strip()
+    remote = git("rev-parse", "origin/main")
+    if remote.returncode != 0:
+        reasons.append("origin/main does not resolve; nothing on GitHub can be compared with HEAD.")
+    elif head != remote.stdout.strip():
+        reasons.append(f"HEAD is {head[:8]} and origin/main is {remote.stdout.strip()[:8]}; "
+                       f"Cloudflare builds origin/main.")
+    return reasons
 
 
 def token() -> str:
@@ -58,6 +107,17 @@ def api(method: str, path: str, body: dict | None = None) -> dict:
 
 
 def main() -> int:
+    if not gates_are_green():
+        return 1
+    reasons = why_this_tree_is_not_the_build()
+    if reasons:
+        print("deploy: refused. Cloudflare builds the GitHub HEAD of main, and this tree is not "
+              "that commit:")
+        for reason in reasons:
+            print(f"  - {reason}")
+        print("deploy: commit and push first, then run this again.")
+        return 1
+
     started = api("POST", f"/accounts/{ACCOUNT}/pages/projects/{PROJECT}/deployments", {})
     if not started.get("success"):
         print("deploy: could not start:", started.get("errors"))
