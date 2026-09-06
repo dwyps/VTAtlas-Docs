@@ -93,6 +93,10 @@ const config: Config = {
   ],
 
   themeConfig: {
+    // The social card. Drawn from the identity system, on the site's own ground, so a link to these
+    // docs carries the mark rather than a screenshot. It is one image for every page by design: the
+    // card names the product, not the section.
+    image: 'img/og.png',
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
