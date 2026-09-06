@@ -12,7 +12,8 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "check": "python tools/check_markdown.py && python tools/check_marks.py"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.2",
