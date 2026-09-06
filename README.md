@@ -28,9 +28,11 @@ npm install
 npm start                        # dev server with hot reload
 npm run build                    # production build into build/
 python tools/check_markdown.py   # the authoring gate
+python tools/check_marks.py      # the mark gate
+npm run check                    # both gates, one name
 ```
 
-Run the gate before committing. It is not style policing: the two failures it exists to catch are
+Run the gates before committing. Neither is style policing: the failures they exist to catch are
 **invisible in the rendered output**.
 
 - **A type expression outside backticks** builds green and *silently deletes the type name*, in
@@ -49,6 +51,14 @@ natively on GitHub, and degrades to a plain blockquote everywhere else:
 
 Banned: `[[wikilinks]]`, `![[embeds]]`, `==highlights==`, `%%comments%%`, `^block-ids`, `:::directives`,
 MDX imports, and `.mdx` files. The gate enforces all of them and every clause is mutation-verified.
+
+The mark gate holds `static/img/logo.svg` and `logo-light.svg` to the rules the identity was drawn
+under: a 128 viewBox, rects and polygons only, uppercase `#RRGGBB` fills and at most two of them,
+integer coordinates, no style, transform, stroke, opacity, metadata or C2PA manifest. A mark that
+breaks them still loads, so nothing else would notice. It checks an explicit list, never a glob,
+because the diagrams under `docs/media/` fail every rule by design. Pass other paths as arguments
+to hold them to the same rules; `--self-test` runs its mutation record, one edit per clause, and
+fails if any survives.
 
 ## Opening the vault
 
@@ -109,6 +119,11 @@ converted to Git later).
 > Fix it once on GitHub: **Settings > Applications > Cloudflare Pages > Repository access**, add
 > `VTAtlas-Docs`. Until then, deploy with `python tools/deploy.py`, which triggers a build and polls
 > it to completion using the token `wrangler login` already stored.
+>
+> The script builds the **HEAD of `main` on GitHub**, not the working tree, so it runs both gates and
+> then refuses unless the tree is that commit: nothing uncommitted or untracked, and `HEAD` equal to
+> `origin/main` after a fetch. Commit and push first. A green gate on any other tree says nothing
+> about what goes live.
 
 ## Versioning
 

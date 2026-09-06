@@ -93,14 +93,13 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: 'img/og.png',
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
     },
     navbar: {
       title: 'VT Atlas',
-      logo: {alt: 'VT Atlas', src: 'img/logo.svg'},
+      logo: {alt: 'VT Atlas', src: 'img/logo-light.svg', srcDark: 'img/logo.svg'},
       items: [
         {type: 'docSidebar', sidebarId: 'docsSidebar', position: 'left', label: 'Documentation'},
         {type: 'docsVersionDropdown', position: 'right'},
