@@ -7,26 +7,28 @@
  * page load. The docs shipped in that stale orange until 2026-08-27.
  *
  *   dark   bg #070809   panel #121417   text #F4F6F7   secondary #899099   accent #B6FF00
- *   light  bg #EEF0EC   panel #FAFBF8   text #0C0E0F   secondary #5E646B   accent #4F7A00
+ *   light  bg #ECEEF0   panel #F8F9FA   text #0C0E0F   secondary #5E646B   accent #B6FF00
  *
- * Lime on near-black is the identity; the light mode uses the darker accent because #B6FF00 on white
- * fails contrast for body-sized text.
+ * The accent is one lime in both themes (Fran, 2026-09-03; light values 2026-09-06). Lime is 1.04:1
+ * on the light paper, so in light it is only ever a surface carrying ink #0C0E0F, never text or a
+ * hairline. Docusaurus paints links, active nav and code accents from --ifm-color-primary, so in light
+ * the primary and every shade of it are the ink, and a lime primary would make every link 1.04:1.
  */
 
 :root {
-  --ifm-color-primary: #4F7A00;
-  --ifm-color-primary-dark: #476E00;
-  --ifm-color-primary-darker: #436800;
-  --ifm-color-primary-darkest: #375600;
-  --ifm-color-primary-light: #578600;
-  --ifm-color-primary-lighter: #5B8C00;
-  --ifm-color-primary-lightest: #679E00;
+  --ifm-color-primary: #0C0E0F;
+  --ifm-color-primary-dark: #0C0E0F;
+  --ifm-color-primary-darker: #0C0E0F;
+  --ifm-color-primary-darkest: #0C0E0F;
+  --ifm-color-primary-light: #0C0E0F;
+  --ifm-color-primary-lighter: #0C0E0F;
+  --ifm-color-primary-lightest: #0C0E0F;
 
-  --ifm-background-color: #EEF0EC;
-  --ifm-background-surface-color: #FAFBF8;
+  --ifm-background-color: #ECEEF0;
+  --ifm-background-surface-color: #F8F9FA;
   --ifm-font-color-base: #0C0E0F;
   --ifm-code-font-size: 92%;
-  --docusaurus-highlighted-code-line-bg: rgba(79, 122, 0, 0.12);
+  --docusaurus-highlighted-code-line-bg: rgba(182, 255, 0, 0.12);
 }
 
 [data-theme='dark'] {
