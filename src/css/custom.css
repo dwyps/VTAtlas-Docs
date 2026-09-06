@@ -29,6 +29,10 @@
   --ifm-font-color-base: #0C0E0F;
   --ifm-code-font-size: 92%;
   --docusaurus-highlighted-code-line-bg: rgba(182, 255, 0, 0.12);
+
+  /* The home hero's gradient start. A surface, so in light it is lime carrying ink (15.93:1), not the
+     ink the primary became; the page's own text and secondary both clear 4.5:1 on it. */
+  --vt-hero-from: #B6FF00;
 }
 
 [data-theme='dark'] {
@@ -46,6 +50,9 @@
   --ifm-navbar-background-color: #070809;
   --ifm-footer-background-color: #121417;
   --docusaurus-highlighted-code-line-bg: rgba(182, 255, 0, 0.12);
+
+  /* What the hero resolved to before the variable existed: the dark primary's darkest shade. */
+  --vt-hero-from: #80B300;
 }
 
 /* Lime is a signal colour: on a dark surface it is the accent, and as a link it should read as one
