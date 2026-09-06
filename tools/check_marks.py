@@ -17,14 +17,21 @@ way the Markdown ones are:
    whole pixels with no SVG renderer. A copy that breaks them has stopped being the master, and
    the icon it is supposed to match can no longer be checked against it.
 
+4. A shape can be in the file and absent from the drawing. A <rect> nested inside another <rect>,
+   an element left in the null or a foreign namespace, a rect of zero width, a rect parked off the
+   canvas: each of those parses, each satisfies a clause-by-clause reading of the rules below, and
+   a browser draws none of them. A gate that counts elements instead of counting what is drawn
+   calls such a file clean, which is the failure it exists to catch.
+
 The rule set is VT_SUITE_ICON_RULES section 6 and the install brief, restated as checks: the root
 is <svg> with viewBox="0 0 128 128" and no width or height; the only shapes are <rect> and
-<polygon>, so no <metadata>, <style>, <defs>, <text>, gradient or group; every shape has
-fill="#RRGGBB" in uppercase and nothing else colours it (no stroke, style, opacity, class or
-transform attribute on a shape or on the root); at most two distinct fills per file; every
-coordinate and every polygon point is an integer; rx and ry, where present, are 0; and the string
-"c2pa" is absent in any case. A <!DOCTYPE or <!ENTITY is refused by regex before the XML parser
-sees the text, which is what keeps the stdlib parser away from entity expansion.
+<polygon>, each a leaf element in the SVG namespace, so no <metadata>, <style>, <defs>, <text>,
+gradient or group and nothing nested inside a shape; every shape has fill="#RRGGBB" in uppercase
+and nothing else colours it (no stroke, style, opacity, class or transform attribute on a shape or
+on the root); at most two distinct fills per file; every coordinate and every polygon point is an
+integer; rx and ry, where present, are 0; and the string "c2pa" is absent in any case. A <!DOCTYPE
+or <!ENTITY is refused by regex before the XML parser sees the text, which is what keeps the stdlib
+parser away from entity expansion.
 
 The files are an explicit list, never a glob. docs/media/*.svg are diagrams with titles, text and
 strokes that fail every rule here by design, and they are not marks. Pass other paths as arguments
@@ -75,25 +82,57 @@ COORDINATES = ("x", "y", "width", "height", "rx", "ry")
 SHAPES = {"rect": RECT_ATTRIBUTES, "polygon": POLYGON_ATTRIBUTES}
 
 
-def _check_rect(element: ElementTree.Element, findings: list[str]) -> None:
+def _covers_canvas(x0: int, y0: int, x1: int, y1: int) -> bool:
+    """Does the box x0..x1 by y0..y1 cover at least one whole pixel of the canvas?
+
+    A shape covering none of it is not a finding, only uncounted. Zero-size and off-canvas shapes
+    are legal SVG that happens to paint nothing, the rule sheet forbids neither, and the drawing on
+    the page is unchanged by one. What the gate refuses is a file where NOTHING is drawn, so the
+    only thing coverage decides is whether a shape may answer for the file as a whole. A shape that
+    hangs over an edge covers pixels and counts, once, like any other."""
+    return x1 - x0 >= 1 and y1 - y0 >= 1 and x1 > 0 and y1 > 0 and x0 < CANVAS and y0 < CANVAS
+
+
+def _check_rect(element: ElementTree.Element, findings: list[str]) -> bool:
+    """Findings for one <rect>, and whether it draws on the canvas."""
+    values: dict[str, int] = {}
     for name in COORDINATES:
         raw = element.get(name, "0")
         if not INTEGER.match(raw):
             findings.append(f"<rect> {name}={raw!r} is not an integer")
             continue
-        if name in ("rx", "ry") and int(raw):
+        values[name] = int(raw)
+        if name in ("rx", "ry") and values[name]:
             findings.append(f"<rect> has a corner radius {name}={raw}; radius is 0 everywhere")
 
+    if len(values) < len(COORDINATES):
+        return False
+    return _covers_canvas(values["x"], values["y"],
+                          values["x"] + values["width"], values["y"] + values["height"])
 
-def _check_polygon(element: ElementTree.Element, findings: list[str]) -> None:
+
+def _check_polygon(element: ElementTree.Element, findings: list[str]) -> bool:
+    """Findings for one <polygon>, and whether it draws on the canvas."""
     raw = element.get("points", "")
     values = [v for v in re.split(r"[\s,]+", raw.strip()) if v]
+    integral = True
     for value in values:
         if not INTEGER.match(value):
             findings.append(f"<polygon> point {value!r} is not an integer")
+            integral = False
             break
     if len(values) < 6 or len(values) % 2:
         findings.append(f"<polygon> points={raw!r} is not a list of at least three integer x,y pairs")
+        return False
+    if not integral:
+        return False
+
+    # The bounding box over-estimates: a polygon inside it can still paint nothing, three collinear
+    # points being the plain case. That is the right direction for a guard against a file that draws
+    # nothing at all, and it never counts a polygon lying wholly off the canvas.
+    xs = [int(v) for v in values[0::2]]
+    ys = [int(v) for v in values[1::2]]
+    return _covers_canvas(min(xs), min(ys), max(xs), max(ys))
 
 
 def check_text(text: str) -> list[str]:
@@ -118,16 +157,26 @@ def check_text(text: str) -> list[str]:
         findings.append(f"root carries {', '.join(unknown)}; the root has xmlns and viewBox only "
                         f"and is sized by the viewBox alone")
 
-    shapes = 0
+    # The root's own children, never root.iter(). A browser draws the children of a container
+    # element, this rule set allows no container, and so a shape nested inside another shape is
+    # simply not drawn: <rect><rect/></rect> paints one rectangle. Walking every descendant counted
+    # the nested one and read the file as clean while the live navbar had lost that shape. Nothing
+    # is skipped silently, because a shape holding children is reported below.
+    drawn = 0
     fills: set[str] = set()
-    for element in root.iter():
-        if element is root:
+    for element in root:
+        if not element.tag.startswith(SVG_NS):
+            findings.append(f"<{element.tag}> is not in the SVG namespace "
+                            f"(xmlns=\"http://www.w3.org/2000/svg\"); an element outside it is not "
+                            f"an SVG shape and does not draw")
             continue
         local = element.tag.removeprefix(SVG_NS)
         if local not in SHAPES:
             findings.append(f"<{local}> is not allowed; a mark is <rect> and <polygon> only")
             continue
-        shapes += 1
+        if len(element):
+            findings.append(f"<{local}> has children; a shape is a leaf, and a shape nested inside "
+                            f"another shape is never drawn")
         unknown = sorted(set(element.attrib) - SHAPES[local])
         if unknown:
             findings.append(f"<{local}> carries {', '.join(unknown)}; its attributes are "
@@ -140,17 +189,20 @@ def check_text(text: str) -> list[str]:
         else:
             fills.add(fill)
         if local == "rect":
-            _check_rect(element, findings)
+            drawn += _check_rect(element, findings)
         else:
-            _check_polygon(element, findings)
+            drawn += _check_polygon(element, findings)
 
     if len(fills) > MAX_FILLS:
         findings.append(f"{len(fills)} distinct fills, at most {MAX_FILLS} allowed: "
                         f"{', '.join(sorted(fills))}")
     # Not a rule from the sheet: a file with no shapes satisfies every clause above and draws
-    # nothing, and a gate that passes an empty mark reads identically to one that checked.
-    if not shapes:
-        findings.append("has no shapes; the file draws nothing")
+    # nothing, and a gate that passes an empty mark reads identically to one that checked. Counting
+    # elements was not enough, since a rect of zero width and a rect off at x=900 are both
+    # well-formed and both paint no pixel, so the count is of shapes that cover the canvas.
+    if not drawn:
+        findings.append(f"no shape covers a pixel of the {CANVAS}x{CANVAS} canvas; "
+                        f"the file draws nothing")
     return findings
 
 
@@ -191,12 +243,25 @@ MASTER = (
 )
 ZONE = '<rect x="56" y="56" width="16" height="16" fill="#607D29"></rect>'
 POLYGON = '<polygon points="12,48 36,48 76,88 76,112" fill="#F4F6F7"></polygon>'
+# The zone rect is the last shape in the master, so this is the frame rect that precedes it.
+LAST_FRAME = 'fill="#F4F6F7"></rect>' + ZONE
+OFF_CANVAS = '<rect x="900" y="56" width="16" height="16" fill="#607D29"></rect>'
+
+
+def _only(text: str, shape: str) -> str:
+    """The master with every rect dropped and one shape put back, so that shape is the whole
+    drawing. A coverage mutation has to be shaped this way: a single dead rect beside eight live
+    ones changes nothing about whether the FILE draws, which is what the guard asks."""
+    return re.sub(r"<rect .*?</rect>", "", text).replace("</svg>", shape + "</svg>")
+
 
 # Positive controls. The clean master must pass, and so must the master with a legal polygon, or
-# every mutation below would "die" against a gate that rejects everything.
+# every mutation below would "die" against a gate that rejects everything. The third control pins
+# the decision in _covers_canvas: a shape that paints nothing is uncounted, not a finding.
 CONTROLS: list[tuple[str, str]] = [
     ("the master itself", MASTER),
     ("the master plus a legal polygon", MASTER.replace("</svg>", POLYGON + "</svg>")),
+    ("the master plus a rect off the canvas", MASTER.replace("</svg>", OFF_CANVAS + "</svg>")),
 ]
 
 Edit = Callable[[str], str]
@@ -212,6 +277,9 @@ MUTATIONS: list[tuple[str, Edit, str]] = [
     ("a text element", lambda s: s.replace(ZONE, '<text x="0" y="0">VT</text>' + ZONE), "text"),
     ("a gradient", lambda s: s.replace(ZONE, '<linearGradient id="g"></linearGradient>' + ZONE), "Gradient"),
     ("a group", lambda s: s.replace(ZONE, "<g>" + ZONE + "</g>"), "<g>"),
+    ("a rect nested in a rect", lambda s: s.replace(LAST_FRAME, 'fill="#F4F6F7">' + ZONE + "</rect>"), "children"),
+    ("a rect in the null namespace", lambda s: s.replace(ZONE, ZONE.replace("<rect ", '<rect xmlns="" ')), "namespace"),
+    ("a rect in a foreign namespace", lambda s: s.replace(ZONE, ZONE.replace("<rect ", '<rect xmlns="http://example.invalid/x" ')), "namespace"),
     ("a circle", lambda s: s.replace(ZONE, '<circle cx="64" cy="64" r="8" fill="#607D29"/>' + ZONE), "circle"),
     ("a path", lambda s: s.replace(ZONE, '<path d="M0 0h8v8z" fill="#607D29"/>' + ZONE), "path"),
     ("stroke on a rect", lambda s: s.replace('fill="#607D29"', 'fill="#607D29" stroke="#000000"'), "stroke"),
@@ -239,6 +307,9 @@ MUTATIONS: list[tuple[str, Edit, str]] = [
     ("C2PA in any case", lambda s: s.replace("</svg>", "<!-- C2PA --></svg>"), "C2PA"),
     ("truncated file", lambda s: s[:-6], "parse"),
     ("no shapes", lambda s: re.sub(r"<rect .*?</rect>", "", s), "draws nothing"),
+    ("only a zero-width rect", lambda s: _only(s, ZONE.replace('width="16"', 'width="0"')), "draws nothing"),
+    ("only a rect off the canvas", lambda s: _only(s, OFF_CANVAS), "draws nothing"),
+    ("only a rect in negative space", lambda s: _only(s, ZONE.replace('x="56" y="56"', 'x="-16" y="-16"')), "draws nothing"),
 ]
 
 
