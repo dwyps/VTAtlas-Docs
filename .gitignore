@@ -24,6 +24,12 @@ yarn-error.log*
 # single asset over 25 MiB at upload time, so raw footage could not be served from here anyway.
 raw/
 
+# Compiled Python from the gates in tools/. A .pyc records the absolute path of the source it was
+# built from, so a committed one publishes the directory layout of whoever ran it, and this repo is
+# public. Any import rewrites them, which would also dirty the tree the deploy step insists is clean.
+__pycache__/
+*.pyc
+
 # Obsidian per-machine state. workspace.json holds pane layout and lastOpenFiles; plugins/ would ship
 # third-party JavaScript inside a product a buyer paid for, and trip Obsidian's Restricted Mode prompt.
 # app.json IS committed: its five keys are what stop Obsidian writing [[wikilinks]] into the vault.
