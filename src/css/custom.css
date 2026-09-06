@@ -9,54 +9,65 @@
  *   dark   bg #070809   panel #121417   text #F4F6F7   secondary #899099   accent #B6FF00
  *   light  bg #ECEEF0   panel #F8F9FA   text #0C0E0F   secondary #5E646B   accent #B6FF00
  *
- * The accent is one lime in both themes (Fran, 2026-09-03; light values 2026-09-06). Lime is 1.04:1
- * on the light paper, so in light it is only ever a surface carrying ink #0C0E0F, never text or a
- * hairline. Docusaurus paints links, active nav and code accents from --ifm-color-primary, so in light
- * the primary and every shade of it are the ink, and a lime primary would make every link 1.04:1.
+ * Lime #B6FF00 is the STUDIO accent. It belongs to Vestro, not to a product, and these are a
+ * product's documentation. The family system gives each product one hue, and VT Atlas is #607D29,
+ * the colour of the zone inside the mark at the top of this page. A site painted in lime reads as
+ * Vestro; painted in the product hue it reads as VT Atlas, which is what it is.
+ *
+ * The ring value cannot carry body text anywhere: #607D29 measures 4.26:1 on the dark ground, 3.92
+ * on the dark panel, 4.05 on the paper and 4.46 on the light panel, all short of 4.5. It is gated
+ * at 3:1 because it is drawn as a MARK, and it stays exactly #607D29 in the mark. Docusaurus paints
+ * links, active nav and code accents from --ifm-color-primary, so the ramp below is that same hue
+ * at a readable lightness: OKLCh hue 126.3 and chroma 0.116 held fixed, L moved until every step
+ * clears 4.5:1 on both the ground and the panel of its own theme. Same colour, legible weight.
+ *
+ * Three grounds, not two. The first ramp cleared the page and the panel and still put the active
+ * breadcrumb at 4.35:1, because Docusaurus paints an active menu item on a tint of its own, rgb(38,
+ * 38, 40) in dark and rgb(224, 226, 228) in light, which is neither. Every step below clears 4.5:1
+ * on all three. Measured: dark primary #7D9C49 is 6.42 / 5.91 / 4.84; light primary #4D690E is
+ * 5.40 / 5.96 / 4.84. The band is narrow, so the ramp is compressed and hover shifts only slightly.
  */
 
 :root {
-  --ifm-color-primary: #0C0E0F;
-  --ifm-color-primary-dark: #0C0E0F;
-  --ifm-color-primary-darker: #0C0E0F;
-  --ifm-color-primary-darkest: #0C0E0F;
-  --ifm-color-primary-light: #0C0E0F;
-  --ifm-color-primary-lighter: #0C0E0F;
-  --ifm-color-primary-lightest: #0C0E0F;
+  --ifm-color-primary: #4D690E;
+  --ifm-color-primary-dark: #4A6609;
+  --ifm-color-primary-darker: #476303;
+  --ifm-color-primary-darkest: #435E00;
+  --ifm-color-primary-light: #4F6B12;
+  --ifm-color-primary-lighter: #506C14;
+  --ifm-color-primary-lightest: #516D15;
 
   --ifm-background-color: #ECEEF0;
   --ifm-background-surface-color: #F8F9FA;
   --ifm-font-color-base: #0C0E0F;
   --ifm-code-font-size: 92%;
-  --docusaurus-highlighted-code-line-bg: rgba(182, 255, 0, 0.12);
+  --docusaurus-highlighted-code-line-bg: rgba(96, 125, 41, 0.12);
 
-  /* The home hero's gradient start. A surface, so in light it is lime carrying ink (15.93:1), not the
-     ink the primary became; the page's own text and secondary both clear 4.5:1 on it. */
-  --vt-hero-from: #B6FF00;
+  /* The home hero's gradient start: a surface in the product hue, carrying the page's own text. */
+  --vt-hero-from: #607D29;
 }
 
 [data-theme='dark'] {
-  --ifm-color-primary: #B6FF00;
-  --ifm-color-primary-dark: #A4E600;
-  --ifm-color-primary-darker: #9BD900;
-  --ifm-color-primary-darkest: #80B300;
-  --ifm-color-primary-lighter: #C0FF26;
-  --ifm-color-primary-lightest: #CDFF59;
-  --ifm-color-primary-light: #BCFF13;
+  --ifm-color-primary: #7D9C49;
+  --ifm-color-primary-dark: #7C9A47;
+  --ifm-color-primary-darker: #7A9946;
+  --ifm-color-primary-darkest: #799744;
+  --ifm-color-primary-light: #83A24F;
+  --ifm-color-primary-lighter: #89A855;
+  --ifm-color-primary-lightest: #92B25F;
 
   --ifm-background-color: #070809;
   --ifm-background-surface-color: #121417;
   --ifm-font-color-base: #F4F6F7;
   --ifm-navbar-background-color: #070809;
   --ifm-footer-background-color: #121417;
-  --docusaurus-highlighted-code-line-bg: rgba(182, 255, 0, 0.12);
+  --docusaurus-highlighted-code-line-bg: rgba(96, 125, 41, 0.18);
 
-  /* What the hero resolved to before the variable existed: the dark primary's darkest shade. */
-  --vt-hero-from: #80B300;
+  --vt-hero-from: #607D29;
 }
 
-/* Lime is a signal colour: on a dark surface it is the accent, and as a link it should read as one
-   without shouting on every line of body text. */
+/* The product hue marks where you are. Infima gives the active nav item the base font colour on a
+   dark theme, so without this the sidebar loses its one piece of product colour. */
 [data-theme='dark'] .menu__link--active,
 [data-theme='dark'] .navbar__link--active {
   color: var(--ifm-color-primary);
