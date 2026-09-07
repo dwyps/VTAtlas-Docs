@@ -10,6 +10,12 @@ versioning. Every breaking change carries a migration note saying what to do abo
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [1.0.0] - 2026-09-07
+
+First release.
+
 ### Added
 
 - **Every region volume can carry a struct you define.** The plugin owns a small fixed set of
