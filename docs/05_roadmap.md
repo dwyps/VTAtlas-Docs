@@ -14,7 +14,7 @@ knowing where a plugin stops is worth more than a wish list.
 deciding whether to build on this, and a quarter is honest about the precision actually available. An
 item slips rather than ships half finished, and when one slips this page says so.
 
-## Shipping now — v1.0, Q3 2026
+## Shipping now: v1.0, Q3 2026
 
 Everything the plugin does today. It is on the timeline for the same reason the later stops are: so you
 can see at a glance what you get now against what you would be waiting for.
@@ -25,7 +25,7 @@ region features, per-volume user data, and exits that pair with enters however a
 
 ## Planned
 
-### v1.1 — Q4 2026
+### v1.1, Q4 2026
 
 **Save and restore discovery.** Discovery is per player and lives in memory today, so a map that filled
 in during a session starts empty in the next one. The plan is a pair of functions that hand you the
@@ -36,7 +36,7 @@ rather than one this plugin invents.
 depth and current occupants, so you can find the one you mean without hunting the outliner. Today the
 gameplay debugger shows this at runtime and the editor shows nothing.
 
-### v1.2 — Q1 2027
+### v1.2, Q1 2027
 
 **Region volume presets.** Placing a volume still means setting a tag, a shape and a tracked-object
 list every time. A preset asset would carry a configured starting point, which matters most for teams
@@ -51,7 +51,7 @@ it ships behind a setting when somebody has a level that needs it. See
 This one sits late on purpose. Nothing in it helps a level that does not need it, and the measurement
 says most levels do not.
 
-## Considering — 2027 onward, no version
+## Considering: 2027 onward, no version
 
 Real ideas with real arguments against them. They carry no date because they ship only if the argument
 for wins, and some of them will not.
