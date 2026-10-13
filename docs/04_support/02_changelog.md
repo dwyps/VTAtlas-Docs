@@ -10,7 +10,10 @@ versioning. Every breaking change carries a migration note saying what to do abo
 
 ## [Unreleased]
 
-Nothing yet.
+### Fixed
+
+- `GetRegionUserDataPtr<T>` pointed into a copy that was destroyed as the call returned. It now points
+  at the data the subsystem holds, valid until the volume that supplied it unregisters.
 
 ## [1.0.0] - 2026-09-07
 

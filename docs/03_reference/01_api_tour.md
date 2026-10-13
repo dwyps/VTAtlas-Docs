@@ -235,6 +235,10 @@ if (const FMyRegionAmbience* Ambience = Atlas->GetRegionUserDataPtr<FMyRegionAmb
 }
 ```
 
+The pointer is into the data the subsystem holds, so it stays good until the volume that supplied it
+unregisters. A volume's data only changes by unregistering and registering again, so an edit ends it
+too: read through it where you get it, and ask again next time rather than keeping it.
+
 `GetRegionUserData` and `GetVolumeUserData` are the untyped forms, handing back an `FInstancedStruct`
 and a bool. Use those when the type is not known at the call site.
 
