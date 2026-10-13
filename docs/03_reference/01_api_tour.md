@@ -64,8 +64,8 @@ Three surfaces, and Concepts explains when to use which.
 
 **The Region Occupant interface**, on an actor:
 
-- `On VTATL Region Entered Exact` / `Exited Exact`
-- `On VTATL Region Entered Or Nested` / `Exited Or Nested`
+- `On VTATLRegion Entered Exact` / `Exited Exact`
+- `On VTATLRegion Entered or Nested` / `Exited or Nested`
 
 **The Region Listener component**, on an actor:
 
@@ -119,22 +119,6 @@ Shared settings on every volume:
 - **Tracked Object Types**, layer zero
 - **Occupant Filter**, layer one
 - **Explain Actor Tracking**, the node to call when nothing happens
-
-## For C++
-
-The queries are on `UVTATLRegionSubsystem` with the same names. Two extension points:
-
-`IVTATLRegionOccupant` - override the `_Implementation` you care about. Test with
-`Implements<UVTATLRegionOccupant>()`, never `Cast<>`: a cast silently misses actors that implement the
-interface in Blueprint.
-
-`AVTATLRegionVolumeBase` - the shape family's base. Deriving is supported; `CaptureShape` is what a
-sibling overrides to describe its geometry.
-
-The registration seam takes plain data: build an `FVTATLVolumeDesc` and call `Register Volume`. It is
-public so a procedural level can make regions without placing actors. A descriptor with no shape
-becomes a box matching its bounds; a descriptor with a shape that cannot answer containment is
-refused rather than substituted.
 
 ## From C++
 
@@ -192,7 +176,7 @@ void AMyGameMode::BeginPlay()
 
 void AMyGameMode::HandleEntered(AActor* Actor, FGameplayTag RegionTag)
 {
-    // THIS RUNS ON THE SERVER AND ON EVERY CLIENT. Regions are computed from level content that
+    // This runs on the server and on every client. Regions are computed from level content that
     // everyone loads, so anything awarded here is awarded once per connection unless you gate it.
     if (!HasAuthority())
     {
@@ -263,3 +247,17 @@ Desc.RegionTag = RegionTag;
 Desc.WorldBounds = Bounds;
 Desc.UserData = FInstancedStruct::Make(FMyRegionAmbience{ CryptBed, 0.35f });
 ```
+
+### Extension points
+
+`IVTATLRegionOccupant` - override the `_Implementation` you care about. Test with
+`Implements<UVTATLRegionOccupant>()`, never `Cast<>`: a cast silently misses actors that implement the
+interface in Blueprint.
+
+`AVTATLRegionVolumeBase` - the shape family's base. Deriving is supported; `CaptureShape` is what a
+sibling overrides to describe its geometry.
+
+The registration seam takes plain data: build an `FVTATLVolumeDesc` and call `RegisterVolume`. It is
+public so a procedural level can make regions without placing actors. A descriptor with no shape
+becomes a box matching its bounds; a descriptor with a shape that cannot answer containment is
+refused rather than substituted.

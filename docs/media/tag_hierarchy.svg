@@ -7,19 +7,8 @@
     placed, four regions entered.</desc>
 
   <!--
-    PALETTE: Vestro "Carbon" (p24), the site's live palette. Lime #D0F29C on true black.
-    NOT the ember orange this file used to carry: that came from src/tokens/colors.css, and v2.js
-    applies the palette at runtime and overwrites those values on every page load, so the token file
-    has not been the site's colour for a long time.
-
-    THE PANEL IS DELIBERATE. An SVG loaded through <img> cannot read the page's CSS variables, so it
-    cannot follow the docs' light/dark toggle. Lime is illegible on white and the light-mode olive is
-    illegible on black, so no single set of strokes works on both page backgrounds. Carrying its own
-    background solves that outright, and it sits consistently beside the editor captures on the same
-    pages, which are dark for the same reason.
-
-    The depth ramp is not decoration: it is the depth colouring the plugin applies to a region
-    volume's ShapeColor, so a reader who has seen the viewport recognises the diagram.
+    Carries its own dark background, because an SVG loaded through <img> cannot follow the
+    page's light and dark themes. Each nested box is drawn brighter than the one outside it.
   -->
   <rect x="0" y="0" width="620" height="300" fill="#121417"/>
   <rect x="0.5" y="0.5" width="619" height="299" fill="none" stroke="#2A3038"/>

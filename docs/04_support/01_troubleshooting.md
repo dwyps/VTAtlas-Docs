@@ -49,8 +49,8 @@ name; the project no longer has a node for it.
 The volume declared a shape it cannot be asked about. A sphere or capsule with no radius, or a spline
 region whose bake failed or is missing.
 
-This is a refusal on purpose. An earlier version quietly substituted a box the size of the volume's
-bounds, which is a wrong answer wearing the costume of a working one.
+This is a refusal on purpose. Quietly substituting a box the size of the volume's bounds would be a
+wrong answer wearing the costume of a working one.
 
 ## "Region volume '...' has a stale or missing footprint"
 

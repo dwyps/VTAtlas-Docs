@@ -58,7 +58,7 @@ for wins, and some of them will not.
 
 **A Gameplay Ability System bridge.** Granting an ability or applying an effect while an actor is in a
 region is an obvious fit, and it was deliberately left out of v1: VT Atlas has no GAS dependency today
-and adding one makes every buyer carry it. The likely answer is a separate optional module rather than
+and adding one makes every project using VT Atlas carry it. The likely answer is a separate optional module rather than
 a dependency in the core plugin.
 
 **Region-scoped audio helpers.** Crossfading ambience on region edges is one of the most common things

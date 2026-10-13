@@ -32,7 +32,7 @@ VTAtlas.Sample.Keep                  everything inside the walls
       .Keep.Hall.Vault.Reliquary     the alcove with the banner
 ```
 
-Standing in the reliquary you are in **five** regions at once, and the minimap in the top left shows
+Standing in the reliquary you are in **five** regions at once, and the minimap in the top right shows
 which. That is the first thing to internalise: regions nest, and membership is not exclusive.
 
 ## The minimap, and why it is the point
@@ -88,12 +88,12 @@ is drawn at its centre. In the details panel, `Fit To Selection` resizes a box v
 else you have selected, and `Add Child Region` authors a nested region without you typing a tag by
 hand.
 
-**Change the keep.** The level is generated, never hand-edited. `Tools/content/author_sample_keep.py`
-is its source of truth: change the constants at the top and re-run it.
+**Change the keep.** It is an ordinary level: move a volume, retag one or add your own, and press
+Play again.
 
 ## What the sample does not show
 
 - **Priority.** Every region here resolves by depth, so the tiebreak never fires.
 - **Dwell time.** The API is there; nothing in the map displays it.
-- **Very large regions.** Nothing here comes close to the size at which a volume is divided into
-  several collision bodies. See Performance.
+- **Very large regions.** Nothing here comes close to the size, about a kilometre on the longest
+  axis, at which a volume is split into several collision bodies.

@@ -12,14 +12,8 @@
     not commitments, and the arrow continues past the last stop.</desc>
 
   <!--
-    PALETTE: Vestro "Carbon" (p24). Same reasoning as tag_hierarchy.svg: this carries its own
-    background because an <img>-loaded SVG cannot follow the docs' light/dark toggle, and no single
-    lime works on both a white and a black page.
-
-    BRIGHTNESS ENCODES CERTAINTY, and that is the whole point of the drawing. v1.0 is solid because
-    it exists. Each later stop is dimmer, and the last one is dashed with no version number at all,
-    because those items may never ship. A timeline that drew every stop identically would be
-    claiming a confidence the roadmap text explicitly refuses to claim.
+    Carries its own dark background, like tag_hierarchy.svg. Brightness shows certainty: v1.0 is
+    solid, each later stop is dimmer, and the last is dashed with no version number.
   -->
   <rect x="0" y="0" width="900" height="380" fill="#121417"/>
   <rect x="0.5" y="0.5" width="899" height="379" fill="none" stroke="#2A3038"/>

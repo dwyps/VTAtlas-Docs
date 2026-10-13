@@ -149,14 +149,12 @@ Two automated scenarios cover it, one for each half, so it stays true:
 
 ### Discovery under Iris
 
-The discovery log carries an Iris replication fragment, and one automated scenario replicates a
-discovery to its owner over a live Iris net driver:
-`VT.Atlas.IrisReplication.DiscoveryReachesItsOwnerUnderIris`.
+The discovery log carries an Iris replication fragment, and our own test suite replicates a discovery
+to its owner over a live Iris net driver. That scenario is not among the tests that ship with the
+plugin, because it needs a project built with Iris and configured as Troubleshooting describes.
 
-**Stated as what is tested rather than as a blanket support claim.** That scenario covers the one thing
-VT Atlas replicates. Nothing else in the plugin goes on the wire, so there is not much more to cover,
-but the honest phrasing is that discovery is exercised under Iris rather than that every future feature
-will be. If you run Iris, see the subobject-list entry in Troubleshooting.
+Discovery is the one thing VT Atlas replicates, so that scenario covers the plugin's whole network
+surface under Iris. If you run Iris, see the subobject-list entry in Troubleshooting.
 
 ### Dwell time under all this
 
@@ -209,7 +207,7 @@ The fix, when you need it, is `SetActorLocation(Location, /*bSweep=*/true)`.
 
 When a region "does not work", call **Explain Actor Tracking** on the volume. It answers the question
 you actually have, and it distinguishes an actor of an untracked object type, an actor the filter
-rejected, and an actor with no collision component at all, which used to look identical from outside.
+rejected, and an actor with no collision component at all, which would otherwise look identical from outside.
 
 **Membership is decided when you cross, not continuously.** Exits are not filter-gated, deliberately:
 if they were, an actor whose filter answer changed while it was inside would be stranded in the region
