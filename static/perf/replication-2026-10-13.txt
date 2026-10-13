@@ -1,0 +1,6 @@
+VT Atlas replication footprint: the wire measurement behind the performance page.
+UE 5.8.3, Development editor build, -nullrhi, 2026-10-13. Three runs, one line each, as logged.
+
+[2026.10.13-18.59.57:091][962]LogVTAtlas: Display: VT Atlas replication footprint: 32 discoveries cost 1478 bytes and 1 packets beyond an idle window, which is 46.2 bytes each. Idle floor over the same window: 7276 bytes, 181 packets.
+[2026.10.13-19.00.11:376][956]LogVTAtlas: Display: VT Atlas replication footprint: 32 discoveries cost 1478 bytes and 1 packets beyond an idle window, which is 46.2 bytes each. Idle floor over the same window: 7276 bytes, 181 packets.
+[2026.10.13-19.00.25:347][958]LogVTAtlas: Display: VT Atlas replication footprint: 32 discoveries cost 1478 bytes and 1 packets beyond an idle window, which is 46.2 bytes each. Idle floor over the same window: 7276 bytes, 181 packets.
