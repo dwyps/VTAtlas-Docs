@@ -10,8 +10,39 @@ versioning. Every breaking change carries a migration note saying what to do abo
 
 ## [Unreleased]
 
+### Added
+
+- **A VT Atlas category in Place Actors**, holding the four region volumes. Before, a volume was found
+  by typing its name into the search.
+- **Gameplay > VT Atlas Region Definition** in the Content Browser's Add menu. Before, it was a Data
+  Asset and a pick from the full class list.
+- **Making a volume's tag from its own panel.** An untagged volume's details panel has a New Region Tag
+  row: type a name, press Create, and the tag is added to the project and given to the volume. With
+  Region Root Tag set, the name goes under the root.
+- **Tag pickers that open under the region root.** With Region Root Tag set, the pickers on a volume's
+  and a definition's Region Tag and on a listener's Watched Regions show the root's branch. Every other
+  tag field in the project keeps its picker.
+- **VT Atlas on the level editor's right-click menu**, for a region volume selected with other actors:
+  Fit Region Volume To Selection, and Explain Actor Tracking, which answers in a notification per actor.
+- **Tools > VT Atlas > Open Sample Level**, which opens the sample keep.
+- **An on-screen line for a refused volume** in development builds, while the game runs, naming the
+  volume and pointing at the Output Log. `vt.atl.ScreenWarnings 0` turns it off.
+
+### Changed
+
+- **A volume dropped into the editor stays quiet until it can work.** No error for the missing tag, and
+  none for a spline with nothing drawn yet; it registers as soon as it has both. A running game still
+  refuses it out loud.
+- **Fit To Selection keeps the volume's rotation and scale.** A turned volume used to be fitted to a
+  world-aligned box and cut corners off what it was meant to enclose.
+- **Add Child Region checks before it writes.** It refuses a name with dots in it and a parent outside
+  the region root without adding a tag, makes the child in the parent's level rather than the current
+  one, and is offered only on a volume that already has a tag.
+
 ### Fixed
 
+- Every row in a Region Definition's Features list was titled "Invalid Title Property!". Each now reads
+  the feature's name.
 - `GetRegionUserDataPtr<T>` pointed into a copy that was destroyed as the call returned. It now points
   at the data the subsystem holds, valid until the volume that supplied it unregisters.
 

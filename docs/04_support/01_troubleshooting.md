@@ -10,9 +10,11 @@ words.
 
 ## "My region does nothing"
 
-Start here, on the volume, before anything else: **Explain Actor Tracking**. It takes the actor you
-expected to be tracked and answers why it is not, and it distinguishes cases that look identical from
-the outside.
+Start here, before anything else: **Explain Actor Tracking**. Select the volume and the actor you
+expected it to track, right-click, and choose VT Atlas > Explain Actor Tracking; from Blueprint or C++,
+call it on the volume. It answers why the actor is not tracked, and it distinguishes cases that look
+identical from the outside. The menu says it in a sentence, one notification per actor; the node
+returns one of these:
 
 - **No Collision Component** - the actor has no collision of any kind, so it has no body and can never
   overlap anything. Nothing on the volume can fix this.
@@ -23,6 +25,13 @@ the outside.
   clause, so you know which one to look at.
 - **Tracked** - the volume does track it, and your problem is elsewhere. Check the region tag, and
   check you are listening to the edge you think you are (see Concepts).
+
+A volume that never registered tracks nothing, whatever the actor, and the menu says that first. The
+messages below say why it was refused.
+
+A volume placed in the editor without a tag, or a spline volume with nothing drawn yet, is not
+refused out loud: it stays quiet until it can work, and data validation is where it is reported. The
+refusals below come from a running game.
 
 ## "Region volume rejected: its Region Tag is unset"
 
@@ -55,16 +64,44 @@ wrong answer wearing the costume of a working one.
 ## "Region volume '...' has a stale or missing footprint"
 
 > Region volume '%s' has a stale or missing footprint: its spline has changed since it was baked.
-> Open the level, press Rebuild Footprint on the volume, and save.
+> Open the level, select the volume and press Rebuild Footprint, then save.
 
-The geometry a spline region ships is the **bake**, not the curve. Editing the spline without
-rebaking leaves the level carrying the old shape. The Data Validation panel says the same thing before
-you save, which is the earlier and better place to catch it.
+The geometry a spline region ships is the **bake**, not the curve. In the editor the bake mostly
+follows you: it runs when you finish an edit to the spline, and on save if it is out of date. This
+message means the level carries a bake that no longer matches, so do what it says. The Data Validation panel
+says the same thing before you save, which is the earlier and better place to catch it.
+
+## "Region volume '...' could not rebuild its footprint"
+
+> Region volume '%s' could not rebuild its footprint: %s.
+
+The second part names why. The ones you will meet while drawing:
+
+- **Spline Not Closed** - the spline does not close, so it encloses no area.
+- **Triangulation Failed** - in practice, the outline crosses itself.
+- **Zero Height** - Extrusion Max Z is not above Extrusion Min Z.
+- **Too Many Hulls** - the outline needs more convex pieces than the budget allows. Simplify it, or
+  split the region into two volumes.
+- **Outside Extent Bound** - a point of the outline is too far from the volume's origin.
+
+Fix the spline or the height range. A spline edit rebakes when you finish it; after any other change,
+press Rebuild Footprint, or save, which rebakes a footprint that is out of date.
 
 ## "Region volume '...' is not tracking anything"
 
-The volume registered and its Tracked Object Types list is empty or matches nothing, so no overlap can
-ever reach it. Usually a Tracked Object Types list that was emptied by hand.
+> Region volume '%s' is not tracking anything.
+
+The volume was refused when it tried to register, so it tracks nothing at all. This line names the
+volume; the reason is the "Region volume rejected" message just before it. That message is printed at
+most once every few seconds, so when several volumes are refused together, you may see this line
+several times and the reason once.
+
+In a development build the same thing is shown on screen while the game runs:
+
+> VT Atlas: region volume '...' is not tracking anything. The Output Log says why.
+
+It is one line per volume, however many PIE clients load the level. Set `vt.atl.ScreenWarnings 0` to
+keep it off the screen; the Output Log still has it. Shipping and Test builds never show it.
 
 ## "Region occupant notifications nested past their depth limit and were refused"
 
@@ -78,13 +115,29 @@ rather than letting the stack run out.
 
 ## "MarkDiscovered rejected: discovery is server-authoritative"
 
-> MarkDiscovered rejected: discovery is server-authoritative. Call it on the server, or use your own
-> RPC.
+> MarkDiscovered rejected: discovery is server-authoritative. Call it on the server, or let
+> auto-discovery record regions as the player enters them.
 
 Discovery is the one part of VT Atlas that replicates, so it is recorded on the server. Region
 membership itself is not, and you can ask about it anywhere.
 
+## "MarkUndiscovered rejected: discovery is server-authoritative"
+
+> MarkUndiscovered rejected: discovery is server-authoritative. Call it on the server.
+
+The same rule for forgetting a region as for recording one.
+
+## "MarkDiscovered called with an unset region tag"
+
+> MarkDiscovered called with an unset region tag. Fix the caller.
+
+Something called MarkDiscovered with an empty tag. That is a bug in the caller, not in the region, so
+nothing is recorded.
+
 ## "MarkDiscovered rejected: this player is at Max Discovery Entries Per Player"
+
+> MarkDiscovered rejected: this player is at Max Discovery Entries Per Player. Raise the limit in
+> Project Settings > Plugins > VT Atlas, or record fewer regions.
 
 A per-player cap, in the plugin's settings. It exists so a runaway caller cannot grow a replicated
 array without limit. Raise it if your game genuinely has that many regions.

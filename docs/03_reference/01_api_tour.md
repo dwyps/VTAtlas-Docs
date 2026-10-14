@@ -118,7 +118,9 @@ Shared settings on every volume:
 - **Priority**, which decides the resolved region when volumes overlap
 - **Tracked Object Types**, layer zero
 - **Occupant Filter**, layer one
-- **Explain Actor Tracking**, the node to call when nothing happens
+- **Explain Actor Tracking**, the node to call when nothing happens. The level editor offers the same
+  answer on its right-click menu, VT Atlas > Explain Actor Tracking, for a volume and the actors
+  selected with it
 
 ## From C++
 

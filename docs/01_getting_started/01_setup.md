@@ -27,20 +27,35 @@ Castle.Keep.Hall
 You are naming places, not configuring the plugin. VT Atlas ships no region tags of its own and never
 requires a particular shape of name. If your game calls them `Zone.Forest.Deep`, use that.
 
-If you want tidier authoring, set **Region Root Tag** in Project Settings > Plugins > VT Atlas. The
-volume validator then warns when a volume is tagged outside that root, which catches the tag picked
-from the wrong branch at three in the morning.
+If you want tidier authoring, set **Region Root Tag** in Project Settings > Plugins > VT Atlas. Two
+things change. The tag pickers on a volume, a definition and a listener open under the root, so the
+branch you want is the one in front of you. And data validation reports an error for a volume or a
+definition tagged outside the root, which catches the tag picked from the wrong branch at three in the
+morning.
 
 ## 3. Place a volume
 
-Open the Place Actors panel (Window > Place Actors), type `region` in its search box, and drag a
-**VT Atlas Region Volume (Box)** into the level. Size it like any trigger.
+Open the Place Actors panel (Window > Place Actors) and choose the **VT Atlas** category. It holds the
+four region volumes. Drag a **VT Atlas Region Volume (Box)** into the level and size it like any
+trigger.
 
-![The Place Actors panel filtered by the word region, showing four entries: VT Atlas Region Volume in Box, Sphere, Capsule and Spline forms.](./media/place_region_volume.avif)
+![The Place Actors panel with the VT Atlas category chosen, showing four entries: VT Atlas Region Volume in Box, Sphere, Capsule and Spline forms.](./media/place_region_volume.avif)
 
 Set its **Region Tag** to one of your tags. That is the minimum: a volume with a tag is a region.
 
-![The Details panel for a selected region volume, showing the VT Atlas category with an Authoring group holding Fit To Selection and Add Child Region, and a Regions group holding Region Tag, Priority, User Data, Tracked Object Types, Track Static Geometry, Occupant Filter and Definition.](./media/volume_details_panel.avif)
+If the tag does not exist yet, make it from the volume itself. Under VT Atlas > Authoring, type a name
+into the "New Region Tag" row and press Create: the tag is added to the project and given to the
+volume, as one undo step. With a region root set, type only the part that goes under the root.
+
+![The Details panel for a selected untagged region volume, showing the VT Atlas category with an Authoring group holding Fit To Selection and New Region Tag, and a Regions group holding Region Tag, Priority, User Data, Tracked Object Types, Track Static Geometry, Occupant Filter and Definition.](./media/volume_details_panel.avif)
+
+A volume you have just dropped stays quiet in the editor until it can work: no error for the missing
+tag, and none for a spline with nothing drawn yet. It registers the moment it has both. In a running
+game the same volume is refused out loud, because there it is a mistake rather than work in progress.
+
+Once the volume has a tag, the same row offers "Add Child Region" instead. Type a name and press Add,
+and a region nested inside this one is made as a new box volume in the same level, half the size and at
+the centre, ready to resize.
 
 Everything below the tag has a working default. **User Data** is where your own struct goes, and
 **Tracked Object Types** decides which object types the volume notices at all.
@@ -75,10 +90,9 @@ Authority** first. This is the single most common surprise; Concepts explains wh
 
 ## 6. Optional: name your regions for players
 
-Create a **VT Atlas Region Definition** asset: right-click in the Content Browser, choose
-Miscellaneous > Data Asset, and pick **VT Atlas Region Definition** from the class list. Give it the
-region tag and a **Display Name**, then point your volumes at it instead of tagging them
-individually.
+Create a **VT Atlas Region Definition** asset: right-click in the Content Browser and choose
+Gameplay > VT Atlas Region Definition. Give it the region tag and a **Display Name**, then point your
+volumes at it instead of tagging them individually.
 
 Worth doing as soon as more than one volume shares a region: the name lives in one place, and the
 Region Listener picks it up automatically. Without a definition, the listener falls back to the last
@@ -89,7 +103,7 @@ part of the tag, so `Castle.Keep.Hall` shows as "Hall".
 - **Concepts** - the model, the authority rules, and what Exact and Or Nested actually mean. Read this
   before you build much.
 - **API Tour** - every node, grouped by the question it answers.
-- **Sample Walkthrough** - a built level using all of it.
+- **Sample Walkthrough** - a built level using all of it. Tools > VT Atlas > Open Sample Level opens it.
 - **Troubleshooting** - every error message the plugin can print, and what to do about it.
 
 ## Requirements and limits

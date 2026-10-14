@@ -9,7 +9,8 @@ The sample map is a small stone keep with six regions in it. It is not a showcas
 shortest thing that shows every idea in the plugin working, and each part of it exists to answer a
 question you would otherwise have to take on trust.
 
-Open `L_VTATL_Keep` and press Play.
+Open it with Tools > VT Atlas > Open Sample Level, or open `L_VTATL_Keep` from the plugin's content,
+and press Play.
 
 ![The sample keep seen from the west gate: stone curtain walls with corner towers around an open
 courtyard.](./media/sample_keep.avif)
@@ -84,9 +85,10 @@ the debugger rather than as its bounds.
 regions you are in and how many you have discovered, and it draws every volume in the level.
 
 **Select a volume in the editor.** Its wireframe is coloured by how deep its region sits, and its tag
-is drawn at its centre. In the details panel, `Fit To Selection` resizes a box volume around whatever
-else you have selected, and `Add Child Region` authors a nested region without you typing a tag by
-hand.
+is drawn at its centre. In the details panel, `Add Child Region` authors a nested region without you
+typing a tag by hand. Select a volume together with other actors and right-click for the rest: VT
+Atlas > Fit Region Volume To Selection resizes a box volume around them, and VT Atlas > Explain Actor
+Tracking says, for each of them, whether the volume would track it.
 
 **Change the keep.** It is an ordinary level: move a volume, retag one or add your own, and press
 Play again.

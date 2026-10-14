@@ -205,8 +205,9 @@ The fix, when you need it, is `SetActorLocation(Location, /*bSweep=*/true)`.
 
 **Layer two is your own code**, in the event.
 
-When a region "does not work", call **Explain Actor Tracking** on the volume. It answers the question
-you actually have, and it distinguishes an actor of an untracked object type, an actor the filter
+When a region "does not work", ask **Explain Actor Tracking**: select the volume and the actor and
+right-click, VT Atlas > Explain Actor Tracking, or call it on the volume. It answers the question you
+actually have, and it distinguishes an actor of an untracked object type, an actor the filter
 rejected, and an actor with no collision component at all, which would otherwise look identical from outside.
 
 **Membership is decided when you cross, not continuously.** Exits are not filter-gated, deliberately:
@@ -216,9 +217,13 @@ forever.
 ## Shapes
 
 Box, sphere and capsule are placed and sized like any trigger. A **spline region** is drawn: place it,
-drag out a closed spline, set the height range, and press Rebuild Footprint.
+drag out a closed spline and set the height range. A box volume can also be fitted around actors you
+already have: select it with them, right-click, and choose VT Atlas > Fit Region Volume To Selection. It
+keeps the volume's rotation and scale.
 
-The spline bakes into convex hulls at authoring time and the level stores the hulls, not the curve.
+The spline bakes into convex hulls at authoring time and the level stores the hulls, not the curve. The
+bake runs by itself when you finish an edit to the spline, and on save if it is out of date; Rebuild
+Footprint runs it by hand, after a change to the height range for instance.
 Nothing is decomposed at runtime, and the shape a query tests is the shape the collision body was
 built from, so the two halves can never disagree.
 
